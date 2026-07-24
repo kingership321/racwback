@@ -27,13 +27,20 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       const res = await api.post('/auth/signin', { email, password });
-      const { session } = res.data;
+      console.debug('signin response', res?.data);
+      const { session } = res.data || {};
+      if (!session || !session.access_token) {
+        // If response shape is different, throw a descriptive error
+        throw new Error('Signin did not return a session with access_token: ' + JSON.stringify(res?.data));
+      }
       localStorage.setItem('token', session.access_token);
       // Fetch user profile with role
       const meRes = await api.get('/auth/me');
+      console.debug('/auth/me response', meRes?.data);
       setUser(meRes.data);
       return meRes.data;
     } catch (error) {
+      console.error('Login error:', error);
       throw error;
     }
   };
