@@ -17,22 +17,51 @@ const upcomingProgramsRoutes = require('./routes/upcomingPrograms');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// CORS configuration
-const frontendOrigins = (process.env.FRONTEND_URLS || process.env.FRONTEND_URL || 'http://localhost:3000')
+// ========== CORS Configuration ==========
+// Read allowed origins from environment, with fallbacks
+const envOrigins = (process.env.FRONTEND_URLS || process.env.FRONTEND_URL || '')
   .split(',')
-  .map(s => s.trim());
+  .map(s => s.trim())
+  .filter(Boolean);
+
+// Always include localhost for development
+const defaultOrigins = [
+  'http://localhost:3000',
+  'http://localhost:3001',
+];
+
+// Include your known production URL explicitly (change if different)
+const productionOrigins = [
+  'https://racwback.vercel.app',
+  // Add other known production domains here
+];
+
+// Combine all origins, remove duplicates
+const allowedOrigins = [...new Set([...envOrigins, ...defaultOrigins, ...productionOrigins])];
+
+console.log('✅ Allowed CORS origins:', allowedOrigins);
+
 app.use(cors({
   origin: (origin, callback) => {
-    // allow requests with no origin (e.g., mobile apps, curl)
+    // Allow requests with no origin (e.g., mobile apps, curl)
     if (!origin) return callback(null, true);
-    if (frontendOrigins.includes(origin)) return callback(null, true);
-    return callback(new Error('CORS policy: Origin not allowed'), false);
+    
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    
+    console.warn(`❌ CORS blocked origin: ${origin}`);
+    return callback(new Error(`CORS policy: Origin "${origin}" not allowed`), false);
   },
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
+
+// ========== Middleware ==========
 app.use(express.json());
 
-// Routes
+// ========== Routes ==========
 app.use('/api/auth', authRoutes);
 app.use('/api/board', boardRoutes);
 app.use('/api/programs', programRoutes);
@@ -44,11 +73,13 @@ app.use('/api/themes', themesRoutes);
 app.use('/api/previousboards', previousBoardsRoutes);
 app.use('/api/settings', settingsRoutes);
 
-// Health check
+// ========== Health Check ==========
 app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
+// ========== Start Server ==========
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(`🌐 Allowed origins: ${allowedOrigins.join(', ')}`);
 });
