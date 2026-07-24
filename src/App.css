@@ -1,0 +1,170 @@
+.App {
+  text-align: center;
+}
+
+.startup-banner-overlay {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100% !important;
+  height: 100% !important;
+  background: rgba(20, 20, 20, 0.3);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999999 !important;
+  padding: 20px;
+  margin: 0;
+  overflow-y: auto;
+}
+
+.startup-banner-card {
+  position: relative;
+  max-width: 95vw;
+  max-height: 90vh;
+  width: 100%;
+  height: auto;
+  background: transparent;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+  flex-shrink: 0;
+  margin: auto;
+}
+
+.startup-banner-image {
+  display: block;
+  width: 100%;
+  max-height: 90vh;
+  height: auto;
+  border-radius: 24px;
+  object-fit: contain;
+}
+
+
+.startup-banner-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 38px;
+  height: 38px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  color: #111;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  transition: background 0.2s ease;
+}
+
+.startup-banner-close:hover {
+  background: rgba(255, 255, 255, 1);
+}
+
+.startup-banner-link {
+  display: block;
+}
+
+/* Mobile devices (320px - 480px) */
+@media (max-width: 480px) {
+  .startup-banner-overlay {
+    padding: 12px;
+  }
+  
+  .startup-banner-card {
+    max-width: 98vw;
+    max-height: 92vh;
+  }
+  
+  .startup-banner-close {
+    top: 8px;
+    right: 8px;
+    width: 32px;
+    height: 32px;
+    font-size: 18px;
+  }
+}
+
+/* Small tablets (481px - 768px) */
+@media (max-width: 768px) and (min-width: 481px) {
+  .startup-banner-overlay {
+    padding: 15px;
+  }
+  
+  .startup-banner-card {
+    max-width: 96vw;
+    max-height: 90vh;
+  }
+  
+  .startup-banner-close {
+    top: 10px;
+    right: 10px;
+    width: 34px;
+    height: 34px;
+    font-size: 19px;
+  }
+}
+
+/* Large tablets and small desktops (769px - 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .startup-banner-card {
+    max-width: 94vw;
+    max-height: 88vh;
+  }
+}
+
+/* Large desktops (1025px+) */
+@media (min-width: 1025px) {
+  .startup-banner-card {
+    max-width: 92vw;
+    max-height: 85vh;
+  }
+}
+
+.startup-banner-link {
+  display: block;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

@@ -1,0 +1,282 @@
+/* File: src/components/Footer/Footer.css */
+
+.site-footer {
+  background: linear-gradient(135deg, #1a365d 0%, #2d4a7c 100%);
+  color: white;
+  padding: 3rem 0 1.5rem;
+  position: relative;
+  overflow: hidden;
+  margin-top: var(--space-2xl);
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: auto;
+  text-align: center;
+  position: relative;
+}
+
+.footer-content p {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.2;
+  color:aliceblue;
+}
+
+.footer-content p:first-child {
+  font-weight: 300;
+  font-size: 1.2rem;
+  margin: 1.2rem auto;
+}
+
+.footer-content a {
+  color: #ffffff;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  position: relative;
+  padding: 0 0.3rem;
+}
+
+.footer-content a:hover {
+  color: #ffcc00;
+  text-shadow: 0 0 8px rgba(255, 204, 0, 0.6);
+}
+
+.footer-content a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: #ffcc00;
+  transition: width 0.3s ease;
+}
+
+.footer-content a:hover::after {
+  width: 100%;
+}
+
+/* Rotaract wheel symbol decoration */
+.footer-content::before {
+  content: '';
+  display: block;
+  width: 300px;
+  height: 70px;
+  background-image: url("../assets/ractu_letter_logo.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  margin-top: 30px;
+  margin: auto;
+  /* opacity: 0.8; */
+}
+
+.footer-content .developer-credit {
+  margin-top: 1.2rem;
+  color: rgba(255, 255, 255);
+  /* font-style: italic; */
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  padding-top: 1rem;
+  font-size: 0.8rem;
+  margin-bottom: 0;
+  text-align: center;
+  font-weight: 400;
+}
+
+.footer-content .dev-designation {
+  margin-top: 0.4rem; 
+  color: rgba(255, 255, 255);
+  /* font-style: italic; */
+  font-size: 0.7rem;
+  text-align: center;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .site-footer {
+    padding: 2.5rem 0 1rem;
+  }
+  
+  .footer-content {
+    padding: 0 1.5rem;
+  }
+  
+  .footer-content .follow {
+    font-size: 1rem;
+  }
+  
+  .footer-content p:first-child {
+    font-size: 1.1rem;
+  }
+  
+  .footer-content::before {
+    width: 150px;
+    height: 150px;
+  }
+}
+
+@media (max-width: 480px) {
+  .site-footer {
+    padding: 0.8rem 0 1rem;
+  }
+  
+  .footer-content {
+    padding: 0 1rem;
+  }
+  
+  .footer-content .follow {
+    font-size: 0.75rem;
+    margin: 0;
+  }
+  
+  .footer-content p:first-child {
+    font-size: 0.75rem;
+    /* margin-bottom: 1rem; */
+  }
+  
+  .footer-content::before {
+    width: 180px;
+    height: 60px;
+    margin-top: 1rem;
+  }
+
+  .dev-designation {
+    font-size: 0.5rem;
+  }
+  .developer-credit {
+    font-size: 0.5rem;
+  }
+
+}
+
+@media (max-width: 300px) {
+  .footer-content .follow {
+    font-size: 0.60rem;
+  }
+  
+  .footer-content p:first-child {
+    font-size: 0.60rem;
+  }
+  
+  .footer-content a {
+    display: inline-block;
+    margin: 0 0.1rem;
+  }
+  
+  .footer-content::before {
+    width: 200px;
+    height: 60px;
+  }
+
+}
+
+/* Add to existing media queries for responsiveness */
+/* @media (max-width: 768px) {
+  .developer-credit {
+    font-size: 0.9rem;
+    margin-top: 1rem;
+    padding-top: 0.7rem;
+  }
+  .dev-designation {
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .developer-credit {
+    font-size: 0.65rem;
+  }
+  .dev-designation {
+    font-size: 0.60rem;
+  }
+}
+
+@media (min-width: 300px) {
+  .developer-credit {
+    font-size: 0.5rem;
+  }
+  .dev-designation {
+    font-size: 0.5rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .developer-credit {
+    font-size: 0.75rem;
+  }
+  .dev-designation {
+    font-size: 0.60rem;
+  }
+}
+
+@media (max-width: 700px) {
+  .developer-credit {
+    font-size: 0.80rem;
+  }
+  .dev-designation {
+    font-size: 0.70rem;
+  }
+} */
+
+@media (min-width: 481px) {
+  .footer-content .follow {
+    font-size: 0.85rem;
+  }
+  
+  .footer-content p:first-child {
+    font-size: 0.95rem;
+  }
+  
+  .footer-content a {
+    display: inline-block;
+    margin: 0 0.1rem;
+  }
+  
+  .footer-content::before {
+    width: 200px;
+    height: 65px;
+  }
+}
+
+@media (min-width: 600px) {
+  .footer-content .follow {
+    font-size: 0.85rem;
+  }
+  
+  .footer-content p:first-child {
+    font-size: 0.95rem;
+  }
+  
+  .footer-content a {
+    display: inline-block;
+    margin: 0 0.1rem;
+  }
+  
+  .footer-content::before {
+    width: 200px;
+    height: 70px;
+  }
+}
+
+
+@media (min-width: 700px) {
+  .footer-content .follow {
+    font-size: 0.95rem;
+  }
+  
+  .footer-content p:first-child {
+    font-size: 1.1rem;
+  }
+  
+  .footer-content a {
+    display: inline-block;
+    margin: 0 0.1rem;
+  }
+  
+  .footer-content::before {
+    width:250px;
+    height: 70px;
+    margin: 0 auto;
+  }
+}

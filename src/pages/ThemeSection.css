@@ -1,0 +1,479 @@
+/* ThemeSection.css - Professional Alignment & Design */
+
+/* ===== THEME SECTION LAYOUT ===== */
+.theme-section {
+  background: linear-gradient(135deg, #f8fafc 0%, #ffffff 50%, #f0f7ff 100%);
+  position: relative;
+  overflow: hidden;
+  padding: var(--space-3xl) 0 0 0;
+}
+
+.theme-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 30%, rgba(31, 77, 159, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(255, 215, 0, 0.03) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+/* ===== SECTION HEADER - Perfect Centering ===== */
+.theme-section__header {
+  text-align: center;
+  margin-bottom: var(--space-2xl);
+  position: relative;
+}
+
+.theme-section__header .heading-2 {
+  font-size: var(--text-4xl);
+  color: var(--rotaract-blue);
+  margin-bottom: var(--space-md);
+  position: relative;
+  display: inline-block;
+  font-weight: 800;
+  text-align: center;
+}
+
+.theme-section__header .heading-2::after {
+  content: '';
+  position: absolute;
+  bottom: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 4px;
+  background: linear-gradient(90deg, var(--rotaract-blue), var(--rotaract-gold), var(--rotaract-pink))  ;
+  border-radius: var(--radius-full);
+}
+
+/* ===== THEME CONTENT CONTAINER ===== */
+.theme-section__content {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-bottom: var(--space-2xl);
+}
+
+.theme-section__content--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===== THEME CARD - Professional Layout ===== */
+.theme-section__card {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border-radius: var(--radius-2xl);
+  box-shadow: 
+    var(--shadow-xl),
+    0 0 0 1px rgba(31, 77, 159, 0.08);
+  padding: var(--space-2xl);
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  transition: all var(--transition-bounce);
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-xl);
+  align-items: start;
+}
+
+.theme-section__card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--rotaract-blue), var(--rotaract-gold), var(--rotaract-pink));
+  border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+}
+
+.theme-section__card:hover {
+  transform: translateY(-8px);
+  box-shadow: 
+    var(--shadow-2xl),
+    0 20px 40px rgba(31, 77, 159, 0.15);
+}
+
+/* ===== THEME IMAGE - Perfect Alignment ===== */
+.theme-section__media {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--space-sm);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, rgba(31, 77, 159, 0.07), rgba(255, 215, 0, 0.08));
+  min-height: 240px;
+}
+
+.theme-section__image {
+  width: 100%;
+  max-width: 100%;
+  max-height: 420px;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  display: block;
+  transition: all var(--transition-normal);
+  border: 3px solid var(--white);
+}
+
+.theme-section__card:hover .theme-section__image {
+  transform: scale(1.01);
+  box-shadow: var(--shadow-xl);
+}
+
+/* ===== THEME TEXT CONTENT - Perfect Typography ===== */
+.theme-section__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  text-align: left;
+}
+
+.theme-section__subtitle {
+  font-size: var(--text-2xl);
+  color: var(--rotaract-blue);
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+  margin-bottom: 0;
+  position: relative;
+  padding-bottom: var(--space-sm);
+  text-align: left;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.7);
+}
+
+.theme-section__subtitle::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--rotaract-blue), var(--rotaract-gold), var(--rotaract-pink));
+  border-radius: var(--radius-full);
+}
+
+.theme-section__description {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.theme-section__paragraph {
+  font-size: var(--text-base);
+  line-height: 1.75;
+  color: #334155;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  text-align: justify;
+  text-justify: inter-word;
+  margin-bottom: 0;
+  hyphens: auto;
+  padding: 0.55rem 0.75rem;
+  border-left: 3px solid rgba(31, 77, 159, 0.18);
+  border-radius: 0 10px 10px 0;
+  background: linear-gradient(90deg, rgba(31, 77, 159, 0.04), transparent);
+}
+
+.theme-section__paragraph:first-child::first-letter {
+  font-size: 3em;
+  font-weight: 800;
+  color: var(--rotaract-blue);
+  float: left;
+  line-height: 0.8;
+  margin-right: 8px;
+  margin-top: 4px;
+  background: linear-gradient(135deg, var(--rotaract-blue), var(--rotaract-dark-blue));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ===== ALTERNATING LAYOUT FOR MULTIPLE CARDS ===== */
+.theme-section__content:nth-child(even) .theme-section__card {
+  background: linear-gradient(135deg, #f0f7ff 0%, #ffffff 100%);
+}
+
+/* .theme-section__content:nth-child(even) .theme-section__subtitle::after {
+  background: linear-gradient(90deg, var(--rotaract-pink), var(--rotaract-gold));
+} */
+
+/* ===== RESPONSIVE DESIGN - Perfect Breakpoints ===== */
+
+/* Tablet - Side by side layout */
+@media (min-width: 768px) {
+  .theme-section__card {
+    grid-template-columns: minmax(260px, 0.9fr) minmax(0, 1.1fr);
+    gap: var(--space-2xl);
+    align-items: center;
+  }
+  
+  .theme-section__media {
+    min-height: 100%;
+    padding: var(--space-md);
+  }
+  
+  .theme-section__image {
+    width: 100%;
+    max-width: 100%;
+    max-height: 420px;
+    aspect-ratio: 4 / 5;
+  }
+  
+  .theme-section__text {
+    text-align: left;
+  }
+  
+  .theme-section__subtitle {
+    text-align: left;
+  }
+}
+
+/* Desktop - Enhanced layout */
+@media (min-width: 992px) {
+  .theme-section__card {
+    padding: var(--space-3xl);
+  }
+  
+  
+  .theme-section__subtitle {
+    font-size: var(--text-3xl);
+  }
+  
+  .theme-section__paragraph {
+    font-size: var(--text-lg);
+  }
+}
+
+/* Large Desktop - Optimal reading width */
+@media (min-width: 1200px) {
+  .theme-section__card {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+}
+
+/* Mid-range screens: keep the image balanced and full-width */
+@media (min-width: 451px) and (max-width: 790px) {
+  .theme-section__card {
+    padding: var(--space-xl);
+  }
+
+  .theme-section__media {
+    min-height: auto;
+    padding: var(--space-sm);
+  }
+
+  .theme-section__image {
+    height: auto;
+    width: 100%;
+    max-width: 100%;
+    max-height: none;
+    aspect-ratio: auto;
+    object-fit: contain;
+  }
+
+  .theme-section__text {
+    text-align: center;
+  }
+
+  .theme-section__subtitle {
+    text-align: center;
+  }
+
+  .theme-section__subtitle::after {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+/* Mobile Optimizations */
+@media (max-width: 767px) {
+  .theme-section__media {
+    min-height: auto;
+  }
+  
+  .theme-section__header {
+    margin-bottom: var(--space-xl);
+  }
+  
+  .theme-section__header .heading-2 {
+    font-size: var(--text-3xl);
+  }
+  
+  .theme-section__card {
+    padding: var(--space-xl);
+    border-radius: var(--radius-xl);
+  }
+
+  
+  .theme-section__subtitle {
+    font-size: var(--text-xl);
+    text-align: center;
+  }
+  
+  .theme-section__subtitle::after {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  .theme-section__text {
+    text-align: center;
+    gap: var(--space-md);
+  }
+  
+  .theme-section__paragraph {
+    text-align: left;
+    font-size: var(--text-sm);
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+  .theme-section__card {
+    padding: var(--space-lg);
+    margin: 0 var(--space-xs);
+  }
+  
+  .theme-section__image {
+    height: auto;
+    width: 100%;
+    max-width: 100%;
+    max-height: none;
+    aspect-ratio: auto;
+    object-fit: contain;
+  }
+  
+  .theme-section__subtitle {
+    font-size: var(--text-lg);
+  }
+  
+  .theme-section__paragraph {
+    font-size: var(--text-sm);
+    line-height: 1.6;
+  }
+}
+
+/* ===== ANIMATION TIMING FOR MULTIPLE CARDS ===== */
+.theme-section__content:nth-child(2) {
+  transition-delay: 200ms;
+}
+
+.theme-section__content:nth-child(3) {
+  transition-delay: 400ms;
+}
+
+/* ===== ACCESSIBILITY & PERFORMANCE ===== */
+@media (prefers-reduced-motion: reduce) {
+  .theme-section__content {
+    transition: none;
+    opacity: 1;
+    transform: none;
+  }
+  
+  .theme-section__card,
+  .theme-section__image {
+    transition: none;
+  }
+  
+  .theme-section__card:hover {
+    transform: none;
+  }
+}
+
+/* Focus styles for accessibility */
+.theme-section__card:focus-within {
+  outline: 2px solid var(--rotaract-gold);
+  outline-offset: 4px;
+}
+
+/* ===== DARK MODE SUPPORT ===== */
+/* @media (prefers-color-scheme: dark) {
+  .theme-section {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+  }
+  
+  .theme-section__card {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    color: #e0e0e0;
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .theme-section__card:nth-child(even) {
+    background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
+  }
+  
+  .theme-section__paragraph {
+    color: #e0e0e0;
+  }
+  
+  .theme-section__image {
+    border-color: #334155;
+    filter: brightness(0.9);
+  }
+}
+
+[data-theme="dark"] .theme-section {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+} */
+
+/* ===== PRINT STYLES ===== */
+@media print {
+  .theme-section__card {
+    box-shadow: none;
+    border: 1px solid #ccc;
+    break-inside: avoid;
+  }
+  
+  .theme-section__image {
+    filter: grayscale(100%);
+  }
+  
+  .theme-section__card:hover {
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+/* ===== LOADING STATES ===== */
+.theme-section__content:not(.theme-section__content--visible) {
+  pointer-events: none;
+}
+
+/* ===== ENHANCED INTERACTION STATES ===== */
+.theme-section__card {
+  position: relative;
+  overflow: hidden;
+}
+
+.theme-section__card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transition: left var(--transition-slow);
+  z-index: 1;
+}
+
+.theme-section__card:hover::after {
+  left: 100%;
+}
+
+/* Ensure content stays above the shine effect */
+.theme-section__image,
+.theme-section__text {
+  position: relative;
+  z-index: 2;
+}

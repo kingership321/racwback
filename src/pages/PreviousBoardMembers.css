@@ -1,0 +1,307 @@
+/* Previous Board Members Gallery Section */
+.previous-boards-section {
+  padding: var(--space-sm) 0;
+  background: linear-gradient(135deg, var(--light-gray) 0%, var(--white) 50%, var(--light-gray) 100%);
+  /* margin: 40px 0; */
+  border-radius: 15px;
+}
+
+.previous-boards-section .section-title {
+  text-align: center;
+  color: #1c4489;
+  font-size: 2.5rem;
+  margin-bottom: 15px;
+  font-weight: 700;
+  position: relative;
+  padding-bottom: 20px;
+}
+
+.previous-boards-section .section-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(135deg, var(--rotaract-blue) 0%, var(--rotaract-gold) 50%, var(--rotaract-pink) 100%);
+  border-radius: 2px;
+}
+
+.previous-boards-section .section-subtitle {
+  text-align: center;
+  color: #666;
+  font-size: 1.1rem;
+  max-width: 700px;
+  margin: 0 auto 40px;
+  line-height: 1.6;
+}
+
+/* Board Gallery Layout */
+.previous-boards-gallery {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.board-year-group {
+  background: white;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.board-year-group:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.board-year-title {
+  background: linear-gradient(135deg, #1c4489, #2c5aa0);
+  color: white;
+  padding: 20px;
+  margin: 0;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  position: relative;
+  overflow: hidden;
+}
+
+.board-year-title::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+}
+
+.board-year-group:hover .board-year-title::before {
+  transform: translateX(100%);
+}
+
+/* A4 Size Image Container - Maintains A4 aspect ratio (1:√2) */
+.board-image-container {
+  position: relative;
+  width: 100%;
+  padding-bottom: 141.4%;
+  overflow: hidden;
+  background: #f8f9fa;
+}
+
+.board-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.5s ease;
+}
+
+.board-year-group:hover .board-image {
+  transform: scale(1.05);
+}
+
+/* Image Overlay */
+.board-image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(28, 68, 137, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  padding: 30px;
+}
+
+.board-image-container:hover .board-image-overlay {
+  opacity: 1;
+}
+
+.overlay-content {
+  text-align: center;
+  color: white;
+  transform: translateY(20px);
+  transition: transform 0.4s ease;
+}
+
+.board-image-container:hover .overlay-content {
+  transform: translateY(0);
+}
+
+.overlay-content h4 {
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+  font-weight: 700;
+  color: #ffc107;
+}
+
+.overlay-content p {
+  font-size: 1.1rem;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.view-details {
+  display: inline-block;
+  padding: 10px 25px;
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid white;
+  border-radius: 25px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.view-details:hover {
+  background: white;
+  color: #1c4489;
+}
+
+/* Boards Note */
+.boards-note {
+  max-width: 800px;
+  margin: 40px auto 0;
+  padding: 20px;
+  background: rgba(28, 68, 137, 0.05);
+  border-radius: 10px;
+  text-align: center;
+  border-left: 4px solid #ffc107;
+}
+
+.boards-note p {
+  color: #1c4489;
+  font-size: 1.1rem;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+}
+
+.boards-note i {
+  font-size: 1.5rem;
+  color: #ffc107;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .previous-boards-gallery {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    max-width: 800px;
+  }
+  
+  .board-image-container {
+    padding-bottom: 141.4%; /* Maintain A4 ratio */
+  }
+  
+  .overlay-content h4 {
+    font-size: 1.6rem;
+  }
+  
+  .overlay-content p {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  /* .previous-boards-section {
+    padding: 40px 0;
+    margin: 30px 0;
+  } */
+  
+  .previous-boards-section .section-title {
+    font-size: 2rem;
+  }
+  
+  .previous-boards-section .section-subtitle {
+    font-size: 1rem;
+    padding: 0 20px;
+  }
+  
+  .board-year-title {
+    font-size: 1.3rem;
+    padding: 15px;
+  }
+  
+  .board-image-overlay {
+    padding: 20px;
+  }
+  
+  .overlay-content h4 {
+    font-size: 1.4rem;
+  }
+  
+  .boards-note p {
+    flex-direction: column;
+    gap: 10px;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .previous-boards-section .section-title {
+    font-size: 1.8rem;
+  }
+  
+  .board-year-title {
+    font-size: 1.2rem;
+  }
+  
+  .overlay-content h4 {
+    font-size: 1.2rem;
+  }
+  
+  .overlay-content p {
+    font-size: 0.9rem;
+  }
+  
+  .view-details {
+    padding: 8px 20px;
+    font-size: 0.8rem;
+  }
+}
+
+/* Animation for section entrance */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.previous-boards-section {
+  animation: fadeInUp 0.8s ease-out;
+}
+
+/* Rotaract-themed decorative elements */
+.board-year-group::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, transparent 50%, #ffc107 50%);
+  border-radius: 0 0 15px 0;
+  z-index: 1;
+}

@@ -1,0 +1,476 @@
+/* LogoConcept.css - Logo Design Concept Visualization */
+
+/* ===== LOGO CONCEPT SECTION LAYOUT ===== */
+.logo-concept {
+  background: 
+    linear-gradient(165deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-primary) 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.logo-concept::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 30%, rgba(31, 77, 159, 0.05) 0%, transparent 60%),
+    radial-gradient(circle at 80% 70%, rgba(255, 215, 0, 0.03) 0%, transparent 60%),
+    radial-gradient(circle at 50% 50%, rgba(212, 19, 103, 0.02) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* ===== SECTION HEADER ===== */
+.logo-concept__header {
+  position: relative;
+  z-index: 2;
+  margin-bottom: var(--space-2xl);
+}
+
+.logo-concept__header .heading-2 {
+  font-size: var(--text-4xl);
+  color: var(--rotaract-blue);
+  margin-bottom: var(--space-md);
+  position: relative;
+  display: inline-block;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--rotaract-blue), var(--rotaract-dark-blue));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.logo-concept__header .heading-2::after {
+  content: '';
+  position: absolute;
+  bottom: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 4px;
+  background: linear-gradient(135deg, var(--rotaract-blue) 0%, var(--rotaract-gold) 50%, var(--rotaract-pink) 100%);
+  border-radius: var(--radius-full);
+  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+}
+
+/* ===== CONTENT LAYOUT ===== */
+.logo-concept__content {
+  display: grid;
+  /* gap: var(--space-2xl); */
+  grid-template-columns: 1fr;
+  position: relative;
+  z-index: 2;
+}
+
+.charter-president__person-infol {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* gap: var(--space-sm); */
+  padding: 0;
+  /* background: linear-gradient(135deg, rgba(31, 77, 159, 0.03) 0%, rgba(255, 215, 0, 0.03) 100%);
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(31, 77, 159, 0.1);
+  margin-bottom: var(--space-lg); */
+}
+
+.charter-president__positionl {
+  font-size: var(--text-sm);
+  color: #fff !important;
+  font-weight: 600;
+  padding: var(--space-sm) var(--space-xl);
+  background: linear-gradient(135deg, var(--rotaract-blue) 0%, var(--rotaract-dark-blue) 100%);
+  border-radius: var(--radius-full);
+  display: inline-block;
+  /* margin-bottom: 0 !important; */
+  border: 2px solid var(--rotaract-gold);
+  text-align: center;
+  line-height: 1.4;
+}
+
+@media (min-width: 768px) {
+  .logo-concept__content {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    gap: var(--space-3xl);
+  }
+}
+
+/* ===== LOGO IMAGE ===== */
+.logo-concept__image-container {
+  position: relative;
+  order: 1;
+}
+
+@media (min-width: 768px) {
+  .logo-concept__image-container {
+    order: 0;
+  }
+}
+
+.logo-concept__image {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-xl);
+  box-shadow: 
+    var(--shadow-2xl),
+    0 0 0 4px var(--white),
+    0 0 0 8px var(--rotaract-gradient-gold);
+  transition: all var(--transition-bounce);
+}
+
+.logo-concept__image:hover {
+  transform: scale(1.02);
+  box-shadow: 
+    var(--shadow-2xl),
+    0 0 0 4px var(--white),
+    0 0 0 8px var(--rotaract-gradient-gold),
+    0 20px 40px rgba(31, 77, 159, 0.2);
+}
+
+/* ===== LOGO DETAILS ===== */
+.logo-concept__details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+  order: 2;
+}
+
+@media (min-width: 768px) {
+  .logo-concept__details {
+    order: 1;
+  }
+}
+
+/* ===== DESIGNER CARD ===== */
+.logo-concept__designer-card {
+  background: var(--rotaract-gradient);
+  color: var(--white);
+  padding: var(--space-xl);
+  border-radius: var(--radius-xl);
+  border: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.logo-concept__designer-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at top right, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.logo-concept__designer-header {
+  text-align: center;
+}
+
+.logo-concept__designer-title {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  margin-bottom: var(--space-md);
+  color: var(--white);
+  opacity: 0.9;
+}
+
+.logo-concept__designer-credits {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.logo-concept__designer-prefix {
+  font-size: var(--text-sm);
+  opacity: 0.8;
+  font-weight: 500;
+}
+
+.logo-concept__designer-name {
+  font-size: var(--text-xl);
+  font-weight: 700;
+  margin: 0;
+  color: var(--white);
+}
+
+.logo-concept__designer-role {
+  opacity: 0.8;
+  margin: 0;
+  color: var(--white);
+}
+
+/* ===== FEATURES SECTION ===== */
+.logo-concept__features {
+  background: var(--white);
+  border-radius: var(--radius-xl);
+  padding: var(--space-xl);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-lg);
+}
+
+.logo-concept__features-title {
+  font-size: var(--text-2xl);
+  color: var(--rotaract-blue);
+  margin-bottom: var(--space-lg);
+  text-align: center;
+  position: relative;
+}
+
+.logo-concept__features-title::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: var(--rotaract-gradient-gold);
+  border-radius: var(--radius-full);
+}
+
+.logo-concept__features-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.logo-concept__feature-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-md);
+  /* padding: var(--space-md); */
+  background: var(--light-gray);
+  border-radius: var(--radius-lg);
+  transition: all var(--transition-normal);
+  border: 1px solid transparent;
+}
+
+.logo-concept__feature-item:hover {
+  background: var(--white);
+  border-color: var(--rotaract-blue);
+  transform: translateX(4px);
+  box-shadow: var(--shadow-md);
+}
+
+.logo-concept__feature-icon {
+  width: 50px;
+  height: 50px;
+  background: var(--rotaract-gradient);
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  flex-shrink: 0;
+  transition: all var(--transition-normal);
+}
+
+.logo-concept__feature-item:hover .logo-concept__feature-icon {
+  background: var(--rotaract-gradient-gold);
+  color: var(--rotaract-blue);
+  transform: scale(1.1);
+}
+
+.logo-concept__feature-icon svg {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+}
+
+.logo-concept__feature-content {
+  flex: 1;
+}
+
+.logo-concept__feature-heading {
+  font-size: var(--text-base);
+  color: var(--rotaract-blue);
+  margin-bottom: var(--space-2xs);
+  font-weight: 600;
+}
+
+.logo-concept__feature-description {
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ===== PHILOSOPHY SECTION ===== */
+.logo-concept__philosophy {
+  background: 
+    linear-gradient(135deg, rgba(248, 250, 252, 0.8) 0%, rgba(241, 245, 249, 0.6) 100%);
+  border-radius: var(--radius-xl);
+  padding: var(--space-xl);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 
+    var(--shadow-sm),
+    inset 0 1px 1px rgba(255, 255, 255, 0.8);
+}
+
+.logo-concept__philosophy-title {
+  font-size: var(--text-xl);
+  color: var(--rotaract-blue);
+  margin-bottom: var(--space-md);
+  text-align: center;
+}
+
+.logo-concept__philosophy-text {
+  color: var(--text-primary);
+  text-align: center;
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 767px) {
+  .logo-concept {
+    padding: var(--space-xl) 0;
+  }
+  
+  .logo-concept__header .heading-2 {
+    font-size: var(--text-3xl);
+  }
+  
+  .logo-concept__image {
+    margin-bottom: var(--space-lg);
+  }
+  
+  .logo-concept__details {
+    gap: var(--space-lg);
+  }
+  
+  .logo-concept__designer-card,
+  .logo-concept__features,
+  .logo-concept__philosophy {
+    padding: var(--space-lg);
+  }
+  
+  .logo-concept__feature-item {
+    padding: var(--space-sm);
+    gap: var(--space-sm);
+  }
+  
+  .logo-concept__feature-icon {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .logo-concept__feature-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo-concept {
+    padding: var(--space-lg) 0;
+  }
+  
+  /* .logo-concept__header .heading-2 {
+    font-size: var(--text-2xl);
+  } */
+  
+  .logo-concept__designer-card,
+  .logo-concept__features,
+  .logo-concept__philosophy {
+    padding: var(--space-md);
+  }
+  
+  .logo-concept__feature-item {
+    flex-direction: column;
+    text-align: center;
+    gap: var(--space-sm);
+  }
+  
+  .logo-concept__feature-icon {
+    align-self: center;
+  }
+}
+
+/* ===== DARK MODE SUPPORT ===== */
+@media (prefers-color-scheme: dark) {
+  .logo-concept {
+    background: linear-gradient(165deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+  }
+  
+  .logo-concept__features,
+  .logo-concept__philosophy {
+    background: #1e293b;
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .logo-concept__feature-item {
+    background: #334155;
+  }
+  
+  .logo-concept__feature-item:hover {
+    background: #475569;
+  }
+  
+  .logo-concept__feature-heading {
+    color: #e2e8f0;
+  }
+  
+  .logo-concept__feature-description,
+  .logo-concept__philosophy-text {
+    color: #94a3b8;
+  }
+  
+  .logo-concept__philosophy {
+    background: 
+      linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.6) 100%);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.logo-concept__image-container {
+  animation: fadeInUp 0.6s ease-out 0.2s both;
+}
+
+.logo-concept__designer-card {
+  animation: fadeInUp 0.6s ease-out 0.4s both;
+}
+
+.logo-concept__features {
+  animation: fadeInUp 0.6s ease-out 0.6s both;
+}
+
+.logo-concept__philosophy {
+  animation: fadeInUp 0.6s ease-out 0.8s both;
+}
+
+/* ===== ACCESSIBILITY ===== */
+@media (prefers-reduced-motion: reduce) {
+  .logo-concept__image,
+  .logo-concept__feature-item,
+  .logo-concept__feature-icon {
+    transition: none;
+  }
+  
+  .logo-concept__image:hover,
+  .logo-concept__feature-item:hover {
+    transform: none;
+  }
+  
+  .logo-concept__image-container,
+  .logo-concept__designer-card,
+  .logo-concept__features,
+  .logo-concept__philosophy {
+    animation: none;
+  }
+}
