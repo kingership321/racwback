@@ -19,9 +19,21 @@ const UpcomingProgramsList = () => {
   const fetchPrograms = async () => {
     try {
       const res = await api.get('/upcoming-programs');
-      setPrograms(res.data);
+      
+      // Safely extract array regardless of wrapper structure
+      let programsArray = [];
+      if (Array.isArray(res?.data)) {
+        programsArray = res.data;
+      } else if (Array.isArray(res?.data?.upcoming_programs)) {
+        programsArray = res.data.upcoming_programs;
+      } else if (Array.isArray(res?.data?.data)) {
+        programsArray = res.data.data;
+      }
+      
+      setPrograms(programsArray);
     } catch (err) {
       console.error('Error fetching upcoming programs:', err);
+      setPrograms([]);
     }
   };
 

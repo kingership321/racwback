@@ -17,7 +17,18 @@ const ThemesList = () => {
 
   const fetchThemes = async () => {
     const res = await api.get('/themes');
-    setThemes(res.data);
+    
+    // Safely extract array regardless of wrapper structure
+    let themesArray = [];
+    if (Array.isArray(res?.data)) {
+      themesArray = res.data;
+    } else if (Array.isArray(res?.data?.themes)) {
+      themesArray = res.data.themes;
+    } else if (Array.isArray(res?.data?.data)) {
+      themesArray = res.data.data;
+    }
+    
+    setThemes(themesArray);
   };
 
   const handleSubmit = async (e) => {

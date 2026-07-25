@@ -30,13 +30,21 @@ const Dashboard = () => {
           api.get('/themes'),
           api.get('/previousboards'),
         ]);
+        
+        // Helper function to safely extract array
+        const getArrayLength = (res) => {
+          if (Array.isArray(res?.data)) return res.data.length;
+          if (Array.isArray(res?.data?.data)) return res.data.data.length;
+          return 0;
+        };
+        
         setStats({
-          programs: programsRes.data.length,
-          boardMembers: boardRes.data.length,
-          charterMessages: charterRes.data.length,
-          values: valuesRes.data.length,
-          themes: themesRes.data.length,
-          previousBoards: boardsRes.data.length,
+          programs: getArrayLength(programsRes),
+          boardMembers: getArrayLength(boardRes),
+          charterMessages: getArrayLength(charterRes),
+          values: getArrayLength(valuesRes),
+          themes: getArrayLength(themesRes),
+          previousBoards: getArrayLength(boardsRes),
         });
       } catch (error) {
         console.error('Error fetching counts:', error);

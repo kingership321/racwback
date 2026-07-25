@@ -21,7 +21,18 @@ const ProgramList = () => {
 
   const fetchPrograms = async () => {
     const res = await api.get('/programs');
-    setPrograms(res.data);
+    
+    // Safely extract array regardless of wrapper structure
+    let programsArray = [];
+    if (Array.isArray(res?.data)) {
+      programsArray = res.data;
+    } else if (Array.isArray(res?.data?.programs)) {
+      programsArray = res.data.programs;
+    } else if (Array.isArray(res?.data?.data)) {
+      programsArray = res.data.data;
+    }
+    
+    setPrograms(programsArray);
   };
 
   const handleSubmit = async (e) => {
@@ -35,9 +46,20 @@ const ProgramList = () => {
         setEditing(res.data.id);
         fetchPrograms();
         const updated = await api.get('/programs');
-        setPrograms(updated.data);
-        const prog = updated.data.find(p => p.id === res.data.id);
-        setImageList(prog?.program_images || []);
+        
+       // Safely extract array
+       let updatedPrograms = [];
+       if (Array.isArray(updated?.data)) {
+         updatedPrograms = updated.data;
+       } else if (Array.isArray(updated?.data?.programs)) {
+         updatedPrograms = updated.data.programs;
+       } else if (Array.isArray(updated?.data?.data)) {
+         updatedPrograms = updated.data.data;
+       }
+        
+       setPrograms(updatedPrograms);
+       const prog = updatedPrograms.find(p => p.id === res.data.id);
+       setImageList(prog?.program_images || []);
         setFormData({ title: '', date: '', place: '', coorganizer: '', display_order: 0 });
         return;
       }

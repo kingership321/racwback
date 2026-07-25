@@ -18,7 +18,18 @@ const StatsList = () => {
 
   const fetchStats = async () => {
     const res = await api.get('/stats');
-    setStats(res.data);
+    
+    // Safely extract array regardless of wrapper structure
+    let statsArray = [];
+    if (Array.isArray(res?.data)) {
+      statsArray = res.data;
+    } else if (Array.isArray(res?.data?.stats)) {
+      statsArray = res.data.stats;
+    } else if (Array.isArray(res?.data?.data)) {
+      statsArray = res.data.data;
+    }
+    
+    setStats(statsArray);
   };
 
   const handleSubmit = async (e) => {

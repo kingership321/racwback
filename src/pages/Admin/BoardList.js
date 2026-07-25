@@ -21,7 +21,18 @@ const BoardList = () => {
 
   const fetchMembers = async () => {
     const res = await api.get('/board');
-    setMembers(res.data);
+    
+    // Safely extract array regardless of wrapper structure
+    let membersArray = [];
+    if (Array.isArray(res?.data)) {
+      membersArray = res.data;
+    } else if (Array.isArray(res?.data?.board)) {
+      membersArray = res.data.board;
+    } else if (Array.isArray(res?.data?.data)) {
+      membersArray = res.data.data;
+    }
+    
+    setMembers(membersArray);
   };
 
 const handleSubmit = async (e) => {

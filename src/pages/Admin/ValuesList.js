@@ -17,7 +17,18 @@ const ValuesList = () => {
 
   const fetchValues = async () => {
     const res = await api.get('/values');
-    setValues(res.data);
+    
+    // Safely extract array regardless of wrapper structure
+    let valuesArray = [];
+    if (Array.isArray(res?.data)) {
+      valuesArray = res.data;
+    } else if (Array.isArray(res?.data?.values)) {
+      valuesArray = res.data.values;
+    } else if (Array.isArray(res?.data?.data)) {
+      valuesArray = res.data.data;
+    }
+    
+    setValues(valuesArray);
   };
 
   const handleSubmit = async (e) => {

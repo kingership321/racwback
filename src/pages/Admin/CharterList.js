@@ -20,7 +20,18 @@ const CharterList = () => {
 
   const fetchItems = async () => {
     const res = await api.get('/charter');
-    setItems(res.data);
+    
+    // Safely extract array regardless of wrapper structure
+    let itemsArray = [];
+    if (Array.isArray(res?.data)) {
+      itemsArray = res.data;
+    } else if (Array.isArray(res?.data?.charter)) {
+      itemsArray = res.data.charter;
+    } else if (Array.isArray(res?.data?.data)) {
+      itemsArray = res.data.data;
+    }
+    
+    setItems(itemsArray);
   };
 
   const handleEdit = (item) => {

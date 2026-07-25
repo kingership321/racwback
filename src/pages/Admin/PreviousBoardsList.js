@@ -17,7 +17,18 @@ const PreviousBoardsList = () => {
 
   const fetchBoards = async () => {
     const res = await api.get('/previousboards');
-    setBoards(res.data);
+    
+    // Safely extract array regardless of wrapper structure
+    let boardsArray = [];
+    if (Array.isArray(res?.data)) {
+      boardsArray = res.data;
+    } else if (Array.isArray(res?.data?.previousboards)) {
+      boardsArray = res.data.previousboards;
+    } else if (Array.isArray(res?.data?.data)) {
+      boardsArray = res.data.data;
+    }
+    
+    setBoards(boardsArray);
   };
 
   const handleSubmit = async (e) => {

@@ -401,10 +401,33 @@ const Programs = () => {
           api.get('/programs'),
           api.get('/upcoming-programs'),
         ]);
-        setPrograms(programsRes.data);
-        setUpcomingPrograms(upcomingRes.data);
+        
+        // Safely extract array for programs
+        let programsArray = [];
+        if (Array.isArray(programsRes?.data)) {
+          programsArray = programsRes.data;
+        } else if (Array.isArray(programsRes?.data?.programs)) {
+          programsArray = programsRes.data.programs;
+        } else if (Array.isArray(programsRes?.data?.data)) {
+          programsArray = programsRes.data.data;
+        }
+        
+        // Safely extract array for upcoming programs
+        let upcomingArray = [];
+        if (Array.isArray(upcomingRes?.data)) {
+          upcomingArray = upcomingRes.data;
+        } else if (Array.isArray(upcomingRes?.data?.upcoming_programs)) {
+          upcomingArray = upcomingRes.data.upcoming_programs;
+        } else if (Array.isArray(upcomingRes?.data?.data)) {
+          upcomingArray = upcomingRes.data.data;
+        }
+        
+        setPrograms(programsArray);
+        setUpcomingPrograms(upcomingArray);
       } catch (error) {
         console.error('Error fetching programs:', error);
+        setPrograms([]);
+        setUpcomingPrograms([]);
       } finally {
         setLoading(false);
       }

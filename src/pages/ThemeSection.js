@@ -95,9 +95,23 @@ function ThemeSection() {
     const fetchThemes = async () => {
       try {
         const res = await api.get('/themes');
-        setThemes(res.data);
+        
+        // Safely extract array regardless of wrapper structure
+        let rawArray = [];
+        if (Array.isArray(res?.data)) {
+          rawArray = res.data;
+        } else if (Array.isArray(res?.data?.themes)) {
+          rawArray = res.data.themes;
+        } else if (Array.isArray(res?.data?.data)) {
+          rawArray = res.data.data;
+        } else {
+          console.warn('API returned non-array themes response:', res?.data);
+        }
+        
+        setThemes(rawArray);
       } catch (error) {
         console.error('Error fetching themes:', error);
+        setThemes([]);
       } finally {
         setLoading(false);
       }
