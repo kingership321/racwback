@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
+import './Auth.css'; // shared auth styles with Login
 
 const Signup = () => {
   const [email, setEmail] = useState('');
@@ -14,9 +15,10 @@ const Signup = () => {
     try {
       const user = await signup(email, password, fullName);
       if (user) {
-        // If user is created, redirect to admin (or show confirmation)
+        // If user is created and auto-logged in, redirect to admin
         navigate('/admin');
       } else {
+        // If email confirmation is required
         alert('Signup successful! Please check your email to confirm.');
         navigate('/login');
       }
@@ -26,15 +28,60 @@ const Signup = () => {
   };
 
   return (
-    <div className="signup-page" style={{ maxWidth: '400px', margin: '2rem auto', padding: '2rem', background: 'white', borderRadius: '8px', boxShadow: '0 2px 10px rgba(0,0,0,0.1)' }}>
-      <h2>Create Account</h2>
-      <form onSubmit={handleSubmit}>
-        <input type="text" value={fullName} onChange={e => setFullName(e.target.value)} placeholder="Full Name" required style={{ width: '100%', padding: '0.75rem', marginBottom: '1rem', border: '1px solid #ccc', borderRadius: '4px' }} />
-        <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" required style={{ width: '100%', padding: '0.75rem', marginBottom: '1rem', border: '1px solid #ccc', borderRadius: '4px' }} />
-        <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Password" required style={{ width: '100%', padding: '0.75rem', marginBottom: '1rem', border: '1px solid #ccc', borderRadius: '4px' }} />
-        <button type="submit" style={{ width: '100%', padding: '0.75rem', background: '#1F4D9F', color: 'white', border: 'none', borderRadius: '4px', fontWeight: 'bold' }}>Sign Up</button>
-      </form>
-      <p style={{ marginTop: '1rem' }}>Already have an account? <Link to="/login">Login</Link></p>
+    <div className="auth-page">
+      <div className="auth-card">
+        <div className="auth-card__header">
+          <h2 className="auth-card__title">Create Account</h2>
+          <p className="auth-card__subtitle">Join the Rotaract Club of TU</p>
+        </div>
+
+        <form className="auth-form" onSubmit={handleSubmit}>
+          <div className="auth-form__group">
+            <label className="auth-form__label">Full Name</label>
+            <input
+              type="text"
+              className="auth-form__input"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              placeholder="Your full name"
+              required
+            />
+          </div>
+
+          <div className="auth-form__group">
+            <label className="auth-form__label">Email</label>
+            <input
+              type="email"
+              className="auth-form__input"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="your@email.com"
+              required
+            />
+          </div>
+
+          <div className="auth-form__group">
+            <label className="auth-form__label">Password</label>
+            <input
+              type="password"
+              className="auth-form__input"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••"
+              required
+            />
+          </div>
+
+          <button type="submit" className="auth-form__button">
+            Sign Up
+          </button>
+        </form>
+
+        <div className="auth-card__footer">
+          <span className="text-gray">Already have an account?</span>{' '}
+          <Link to="/login">Login</Link>
+        </div>
+      </div>
     </div>
   );
 };
