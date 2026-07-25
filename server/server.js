@@ -78,6 +78,39 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
+// ========== Root Route ==========
+app.get('/', (req, res) => {
+  res.json({
+    message: 'RCTU Backend API Server',
+    status: 'running',
+    version: '0.1.0',
+    endpoints: {
+      health: '/api/health',
+      auth: '/api/auth',
+      board: '/api/board',
+      programs: '/api/programs',
+      upcomingPrograms: '/api/upcoming-programs',
+      charter: '/api/charter',
+      stats: '/api/stats',
+      values: '/api/values',
+      themes: '/api/themes',
+      previousBoards: '/api/previousboards',
+      settings: '/api/settings',
+    },
+    timestamp: new Date().toISOString(),
+  });
+});
+
+// ========== 404 Handler ==========
+app.use((req, res) => {
+  res.status(404).json({
+    error: 'Not Found',
+    message: `The endpoint ${req.method} ${req.path} does not exist`,
+    availableEndpoints: 'GET /',
+    timestamp: new Date().toISOString(),
+  });
+});
+
 // ========== Start Server ==========
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
