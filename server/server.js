@@ -62,7 +62,7 @@ app.use(cors({
 app.use(express.json());
 
 // ========== Routes ==========
-app.use('/api/auth/signin', authRoutes);
+app.use('/signin', authRoutes);
 app.use('/api/board', boardRoutes);
 app.use('/api/programs', programRoutes);
 app.use('/api/upcoming-programs', upcomingProgramsRoutes);
