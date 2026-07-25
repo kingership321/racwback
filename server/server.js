@@ -103,6 +103,11 @@ app.get('/', (req, res) => {
 
 // ========== 404 Handler ==========
 app.use((req, res) => {
+  // Don't send 405 for OPTIONS, they should have been handled by CORS
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  
   res.status(404).json({
     error: 'Not Found',
     message: `The endpoint ${req.method} ${req.path} does not exist`,

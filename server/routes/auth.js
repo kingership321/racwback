@@ -3,6 +3,20 @@ const { supabase, supabaseAdmin } = require('../utils/supabaseClient');
 const authMiddleware = require('../middleware/auth');
 const router = express.Router();
 
+// Middleware to check if Supabase is initialized
+const checkSupabaseConfig = (req, res, next) => {
+  if (!supabase) {
+    return res.status(503).json({ 
+      error: 'Service Unavailable',
+      message: 'Authentication service is not configured. Please set SUPABASE_URL and SUPABASE_ANON_KEY environment variables.'
+    });
+  }
+  next();
+};
+
+// Apply config check to all auth routes
+router.use(checkSupabaseConfig);
+
 // Sign up
 router.post('/signup', async (req, res) => {
   const { email, password, full_name } = req.body;
