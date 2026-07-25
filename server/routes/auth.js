@@ -60,7 +60,7 @@ router.post('/signup', async (req, res) => {
 });
 
 // Sign in
-router.post('/signin', async (req, res) => {
+router.post('/auth', async (req, res) => {
   const { email, password } = req.body;
   console.log('Login attempt:', email);
   try {
