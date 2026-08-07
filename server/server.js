@@ -33,6 +33,8 @@ const defaultOrigins = [
 // Include your known production URL explicitly (change if different)
 const productionOrigins = [
   'https://racwback.vercel.app',
+  'https://rotaractcluboftu.com',
+  'https://www.rotaractcluboftu.com',
   // Add other known production domains here
 ];
 
