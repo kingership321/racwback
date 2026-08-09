@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
+import ImageUploadPicker from '../../components/ImageUploadPicker';
 
 const ThemesList = () => {
   const [themes, setThemes] = useState([]);
@@ -109,8 +110,12 @@ const ThemesList = () => {
                 />
               </div>
               <div className="admin-form__group" style={{ gridColumn: 'span 2' }}>
-                <label>Image URL</label>
-                <input name="image_url" value={formData.image_url} onChange={handleChange} placeholder="https://..." />
+                <ImageUploadPicker
+                  label="Image URL"
+                  value={formData.image_url}
+                  onChange={(url) => setFormData(prev => ({ ...prev, image_url: url }))}
+                  uploadFolder="themes"
+                />
               </div>
               <div className="admin-form__group">
                 <label>Display Order</label>

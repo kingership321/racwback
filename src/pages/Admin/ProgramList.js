@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
 import { FaPlus, FaEdit, FaTrash, FaTimes, FaSave, FaImage } from 'react-icons/fa';
+import ImageUploadPicker from '../../components/ImageUploadPicker';
 
 const ProgramList = () => {
   const [programs, setPrograms] = useState([]);
@@ -191,16 +192,20 @@ const ProgramList = () => {
       {editing && editing !== 'new' && (
         <div className="admin-card">
           <h3 className="admin-card__title"><FaImage /> Manage Images</h3>
-          <form className="admin-add-image-form" onSubmit={handleAddImage}>
-            <input
-              type="text"
+          <div style={{ display: 'grid', gap: '1rem' }}>
+            <ImageUploadPicker
+              label="Program Image"
               value={newImageUrl}
-              onChange={e => setNewImageUrl(e.target.value)}
-              placeholder="Image URL (e.g., https://...)"
-              required
+              onChange={setNewImageUrl}
+              uploadFolder="program-images"
+              libraryTitle="Uploaded program images"
             />
-            <button type="submit" className="btn-admin btn-admin--primary"><FaPlus /> Add Image</button>
-          </form>
+            <div className="admin-form__actions" style={{ justifyContent: 'flex-start' }}>
+              <button type="button" className="btn-admin btn-admin--primary" onClick={handleAddImage}>
+                <FaPlus /> Add Image
+              </button>
+            </div>
+          </div>
           <div className="admin-images-grid">
             {imageList.map(img => (
               <div key={img.id} className="admin-image-item">

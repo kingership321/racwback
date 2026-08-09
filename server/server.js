@@ -13,6 +13,7 @@ const themesRoutes = require('./routes/themes');
 const previousBoardsRoutes = require('./routes/previousBoards');
 const settingsRoutes = require('./routes/settings');
 const upcomingProgramsRoutes = require('./routes/upcomingPrograms');
+const uploadsRoutes = require('./routes/uploads');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -74,6 +75,7 @@ app.use('/api/values', valuesRoutes);
 app.use('/api/themes', themesRoutes);
 app.use('/api/previousboards', previousBoardsRoutes);
 app.use('/api/settings', settingsRoutes);
+app.use('/api/uploads', uploadsRoutes);
 
 // ========== Health Check ==========
 app.get('/api/health', (req, res) => {

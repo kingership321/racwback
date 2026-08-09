@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
 import { FaPlus, FaEdit, FaTrash, FaTimes, FaSave, FaImage } from 'react-icons/fa';
+import ImageUploadPicker from '../../components/ImageUploadPicker';
 
 const PreviousBoardsList = () => {
   const [boards, setBoards] = useState([]);
@@ -105,8 +106,12 @@ const PreviousBoardsList = () => {
                 <input name="display_order" type="number" value={formData.display_order} onChange={handleChange} />
               </div>
               <div className="admin-form__group" style={{ gridColumn: 'span 2' }}>
-                <label>Image URL <span className="required">*</span></label>
-                <input name="image_url" value={formData.image_url} onChange={handleChange} placeholder="https://..." required />
+                <ImageUploadPicker
+                  label="Image URL"
+                  value={formData.image_url}
+                  onChange={(url) => setFormData(prev => ({ ...prev, image_url: url }))}
+                  uploadFolder="previous-boards"
+                />
               </div>
             </div>
             <div className="admin-form__actions">

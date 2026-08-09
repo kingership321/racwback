@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
 import { FaEdit, FaSave, FaTimes } from 'react-icons/fa';
+import ImageUploadPicker from '../../components/ImageUploadPicker';
 
 const CharterList = () => {
   const [items, setItems] = useState([]);
@@ -102,8 +103,12 @@ const CharterList = () => {
                 <input name="term" value={formData.term} onChange={handleChange} placeholder="e.g., RY 2025–26" />
               </div>
               <div className="admin-form__group" style={{ gridColumn: 'span 2' }}>
-                <label>Image URL</label>
-                <input name="image_url" value={formData.image_url} onChange={handleChange} placeholder="https://..." />
+                <ImageUploadPicker
+                  label="Image URL"
+                  value={formData.image_url}
+                  onChange={(url) => setFormData(prev => ({ ...prev, image_url: url }))}
+                  uploadFolder="charter-messages"
+                />
               </div>
               <div className="admin-form__group" style={{ gridColumn: 'span 2' }}>
                 <label>Message <span className="required">*</span></label>

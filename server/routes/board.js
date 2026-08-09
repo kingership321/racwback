@@ -17,7 +17,7 @@ router.get('/', async (req, res) => {
 // Admin only: create
 router.post('/', authMiddleware, adminMiddleware, async (req, res) => {
   const payload = { ...req.body };
-  const allowedFields = ['name', 'position', 'image_url', 'facebook_url', 'linkedin_url', 'email'];
+  const allowedFields = ['name', 'position', 'image_url', 'facebook_url', 'linkedin_url', 'email', 'display_order'];
   const safePayload = Object.fromEntries(
     Object.entries(payload).filter(([key]) => allowedFields.includes(key))
   );
@@ -34,7 +34,7 @@ router.post('/', authMiddleware, adminMiddleware, async (req, res) => {
 router.put('/:id', authMiddleware, adminMiddleware, async (req, res) => {
   const { id } = req.params;
   const payload = { ...req.body };
-  const allowedFields = ['name', 'position', 'image_url', 'facebook_url', 'linkedin_url', 'email'];
+  const allowedFields = ['name', 'position', 'image_url', 'facebook_url', 'linkedin_url', 'email', 'display_order'];
   const updates = Object.fromEntries(
     Object.entries(payload).filter(([key]) => allowedFields.includes(key))
   );

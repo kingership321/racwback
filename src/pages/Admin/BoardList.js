@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
 import { FaPlus, FaEdit, FaTrash, FaTimes } from 'react-icons/fa';
+import ImageUploadPicker from '../../components/ImageUploadPicker';
 
 const BoardList = () => {
   const [members, setMembers] = useState([]);
@@ -41,11 +42,12 @@ const handleSubmit = async (e) => {
     if (editing && editing !== 'new') {
       await api.put(`/board/${editing}`, formData);
     } else {
-      // For new, remove any id field that might be present
       const { id, ...newData } = formData;
       await api.post('/board', newData);
     }
-    // ... reset
+    setEditing(null);
+    setFormData({ name: '', position: '', image_url: '', facebook_url: '', linkedin_url: '', email: '', display_order: 0 });
+    fetchMembers();
   } catch (err) {
     alert(err.response?.data?.error || 'Error saving');
   }
@@ -68,7 +70,10 @@ const handleSubmit = async (e) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData(prev => ({
+      ...prev,
+      [name]: name === 'display_order' ? parseInt(value, 10) || 0 : value,
+    }));
   };
 
   const cancelEdit = () => {
@@ -106,9 +111,13 @@ const handleSubmit = async (e) => {
                 <label>Position <span className="required">*</span></label>
                 <input name="position" value={formData.position} onChange={handleChange} required />
               </div>
-              <div className="admin-form__group">
-                <label>Image URL</label>
-                <input name="image_url" value={formData.image_url} onChange={handleChange} placeholder="https://..." />
+              <div className="admin-form__group" style={{ gridColumn: 'span 2' }}>
+                <ImageUploadPicker
+                  label="Image URL"
+                  value={formData.image_url}
+                  onChange={(url) => setFormData(prev => ({ ...prev, image_url: url }))}
+                  uploadFolder="board-members"
+                />
               </div>
               <div className="admin-form__group">
                 <label>Display Order</label>

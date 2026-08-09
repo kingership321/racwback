@@ -1,0 +1,127 @@
+.image-upload-picker {
+  display: grid;
+  gap: 1rem;
+  background: #f7fafc;
+  border: 1px solid rgba(31, 45, 61, 0.1);
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+.image-upload-picker__label-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.image-upload-picker__label-row label {
+  display: block;
+  font-weight: 600;
+  color: #1f2d3d;
+}
+
+.image-upload-picker__error {
+  color: #d92f2f;
+  font-size: 0.85rem;
+}
+
+.image-upload-picker__url-input,
+.image-upload-picker__file-input {
+  width: 100%;
+  border: 1px solid rgba(31, 45, 61, 0.15);
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  font-size: 0.95rem;
+  outline: none;
+}
+
+.image-upload-picker__upload-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.image-upload-picker__upload-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+
+.image-upload-picker__preview {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.image-upload-picker__preview-label {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.image-upload-picker__preview img {
+  width: 100%;
+  max-height: 250px;
+  object-fit: contain;
+  border-radius: 12px;
+  box-shadow: 0 4px 18px rgba(31, 45, 61, 0.08);
+}
+
+.image-upload-picker__library {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.image-upload-picker__library-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #1f2d3d;
+  font-weight: 600;
+}
+
+.image-upload-picker__library-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.75rem;
+}
+
+.image-upload-picker__library-item {
+  display: grid;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: #fff;
+  border: 1px solid rgba(31, 45, 61, 0.1);
+  border-radius: 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.image-upload-picker__library-item:hover,
+.image-upload-picker__library-item.selected {
+  border-color: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+.image-upload-picker__library-item img {
+  width: 100%;
+  max-height: 100px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.image-upload-picker__library-item span {
+  font-size: 0.8rem;
+  color: #334155;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.image-upload-picker__loading,
+.image-upload-picker__empty {
+  color: #64748b;
+  font-size: 0.9rem;
+  margin: 0;
+}
