@@ -1,6 +1,9 @@
 ﻿import axios from 'axios';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+// Use relative `/api` by default so the frontend talks to the same origin when
+// the backend is hosted alongside the frontend. For separated backends set
+// `REACT_APP_API_URL` in your deployment environment (e.g. Vercel).
+const API_URL = process.env.REACT_APP_API_URL || '/api';
 
 const api = axios.create({
   baseURL: API_URL,
