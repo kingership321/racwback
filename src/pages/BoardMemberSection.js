@@ -254,6 +254,7 @@
 
 
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import api from '../services/api';
 import './BoardMemberSection.css';
 
@@ -263,11 +264,17 @@ const BoardMemberSection = () => {
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const getCurrentRotaYear = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    return today.getMonth() >= 6 ? year : year - 1;
+  };
+
   useEffect(() => {
     const fetchMembers = async () => {
       try {
         const res = await api.get('/board');
-        setMembers(res.data);
+        setMembers(Array.isArray(res.data) ? res.data : []);
       } catch (error) {
         console.error('Error fetching board members:', error);
       } finally {
@@ -279,26 +286,50 @@ const BoardMemberSection = () => {
 
   if (loading) return <div>Loading board members...</div>;
 
+  const currentRotaYear = getCurrentRotaYear();
+  const boardMembersThisYear = members.filter((member) => {
+    const year = Number(member.year);
+    const isBoard = member.role !== 'general';
+    return isBoard && year === currentRotaYear;
+  });
+
   return (
     <section className="board-members">
-      {/* header and grid same as before, but map over members */}
-      <div className="board-members__grid">
-        {members.map(member => (
-          <div key={member.id} className="board-member-card card">
-            <div className="board-member-card__image">
-              <img 
-                src={member.image_url} 
-                alt={member.name}
-                className="board-member-card__photo img-responsive img-circle"
-              />
-              {/* overlay and social links as before, using member.facebook_url, etc. */}
+      <div className="container">
+        <div className="board-members__header text-center mb-5">
+          <h2 className="heading-2 heading-underline heading-center">Our Board Members</h2>
+          <p className="lead text-gray">
+            Meet the dedicated team leading our club towards positive change.
+          </p>
+        </div>
+
+        <div className="board-members__grid">
+          {boardMembersThisYear.length > 0 ? boardMembersThisYear.map(member => (
+            <div key={member.id} className="board-member-card card">
+              <div className="board-member-card__image">
+                <img 
+                  src={member.image_url} 
+                  alt={member.name}
+                  className="board-member-card__photo img-responsive img-circle"
+                />
+              </div>
+              <div className="board-member-card__info text-center">
+                <h3 className="board-member-card__name heading-5">{member.name}</h3>
+                <p className="board-member-card__position body-small">{member.position}</p>
+              </div>
             </div>
-            <div className="board-member-card__info text-center">
-              <h3 className="board-member-card__name heading-5">{member.name}</h3>
-              <p className="board-member-card__position body-small">{member.position}</p>
+          )) : (
+            <div className="board-members__empty text-center">
+              <p className="lead text-gray">No board members found for the current rota year.</p>
             </div>
-          </div>
-        ))}
+          )}
+        </div>
+
+        <div className="board-members__cta">
+          <Link to="/teams" className="btn btn-primary">
+            Know more about our Teams
+          </Link>
+        </div>
       </div>
     </section>
   );

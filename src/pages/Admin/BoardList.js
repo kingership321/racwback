@@ -9,6 +9,10 @@ const BoardList = () => {
   const [formData, setFormData] = useState({
     name: '',
     position: '',
+    role: 'board',
+    committee: '',
+    contribution: '',
+    year: new Date().getFullYear(),
     image_url: '',
     facebook_url: '',
     linkedin_url: '',
@@ -46,7 +50,7 @@ const handleSubmit = async (e) => {
       await api.post('/board', newData);
     }
     setEditing(null);
-    setFormData({ name: '', position: '', image_url: '', facebook_url: '', linkedin_url: '', email: '', display_order: 0 });
+    setFormData({ name: '', position: '', role: 'board', committee: '', contribution: '', year: new Date().getFullYear(), image_url: '', facebook_url: '', linkedin_url: '', email: '', display_order: 0 });
     fetchMembers();
   } catch (err) {
     alert(err.response?.data?.error || 'Error saving');
@@ -72,13 +76,25 @@ const handleSubmit = async (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: name === 'display_order' ? parseInt(value, 10) || 0 : value,
+      [name]: ['display_order', 'year'].includes(name) ? parseInt(value, 10) || 0 : value,
     }));
   };
 
   const cancelEdit = () => {
     setEditing(null);
-    setFormData({ name: '', position: '', image_url: '', facebook_url: '', linkedin_url: '', email: '', display_order: 0 });
+    setFormData({
+      name: '',
+      position: '',
+      role: 'board',
+      committee: '',
+      contribution: '',
+      year: new Date().getFullYear(),
+      image_url: '',
+      facebook_url: '',
+      linkedin_url: '',
+      email: '',
+      display_order: 0,
+    });
   };
 
   return (
@@ -111,13 +127,33 @@ const handleSubmit = async (e) => {
                 <label>Position <span className="required">*</span></label>
                 <input name="position" value={formData.position} onChange={handleChange} required />
               </div>
+              <div className="admin-form__group">
+                <label>Role</label>
+                <select name="role" value={formData.role} onChange={handleChange}>
+                  <option value="board">Board Member</option>
+                  <option value="general">General Member</option>
+                </select>
+              </div>
+              <div className="admin-form__group">
+                <label>Committee / Chair</label>
+                <input name="committee" value={formData.committee} onChange={handleChange} />
+              </div>
               <div className="admin-form__group" style={{ gridColumn: 'span 2' }}>
+                <label>Contribution</label>
+                <textarea name="contribution" value={formData.contribution} onChange={handleChange} rows={3} />
+              </div>
+              <div className="admin-form__group">
+                <label>Image URL</label>
                 <ImageUploadPicker
                   label="Image URL"
                   value={formData.image_url}
                   onChange={(url) => setFormData(prev => ({ ...prev, image_url: url }))}
                   uploadFolder="board-members"
                 />
+              </div>
+              <div className="admin-form__group">
+                <label>Year</label>
+                <input name="year" type="number" value={formData.year} onChange={handleChange} />
               </div>
               <div className="admin-form__group">
                 <label>Display Order</label>
@@ -157,6 +193,8 @@ const handleSubmit = async (e) => {
                 <th>Photo</th>
                 <th>Name</th>
                 <th>Position</th>
+                <th>Role</th>
+                <th>Year</th>
                 <th className="col-actions">Actions</th>
               </tr>
             </thead>
@@ -175,6 +213,8 @@ const handleSubmit = async (e) => {
                     </td>
                     <td><strong>{m.name}</strong></td>
                     <td>{m.position}</td>
+                    <td>{m.role === 'general' ? 'General' : 'Board'}</td>
+                    <td>{m.year || '-'}</td>
                     <td className="col-actions">
                       <button className="btn-admin btn-admin--warning btn-admin--sm" onClick={() => handleEdit(m)}>
                         <FaEdit />

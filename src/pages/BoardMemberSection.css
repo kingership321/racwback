@@ -71,6 +71,11 @@
   z-index: 2;
 }
 
+.board-members__cta {
+  margin-top: var(--space-2xl);
+  text-align: center;
+}
+
 /* ===== PREMIUM BOARD MEMBER CARD ===== */
 .board-member-card {
   background: linear-gradient(135deg, var(--white) 0%, #f8fafc 100%);

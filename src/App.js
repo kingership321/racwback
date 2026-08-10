@@ -23,6 +23,7 @@ import ValuesList from './pages/Admin/ValuesList';
 import ThemesList from './pages/Admin/ThemesList';
 import PreviousBoardsList from './pages/Admin/PreviousBoardsList';
 import Settings from './pages/Admin/Settings';
+import Teams from './pages/Teams';
 import './App.css';
 
 function App() {
@@ -40,6 +41,7 @@ function App() {
             <Route path="/contact" element={<Contact />} />
             <Route path="/programs" element={<Programs />} />
             <Route path="/imagegallery" element={<ImageGallery />} />
+            <Route path="/teams" element={<Teams />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
 
