@@ -214,14 +214,18 @@
   hyphens: auto;
 }
 
+.charter-president__paragraph:first-child {
+  padding-top: 0.75em;
+}
+
 .charter-president__paragraph:first-child::first-letter {
   font-size: 3em;
   font-weight: 800;
   color: var(--rotaract-blue);
   float: left;
-  line-height: 0.8;
+  line-height: 0.0;
   margin-right: 8px;
-  margin-top: 4px;
+  margin-top: 0.12em;
   background: linear-gradient(135deg, var(--rotaract-blue), var(--rotaract-dark-blue));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
