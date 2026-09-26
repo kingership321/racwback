@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
-import { FaPlus, FaEdit, FaTrash, FaTimes, FaSave } from 'react-icons/fa';
+import { FaPlus, FaEdit, FaTrash, FaTimes, FaSave, FaKey, FaCheckCircle, FaExclamationTriangle } from 'react-icons/fa';
 
 const Settings = () => {
   const [settings, setSettings] = useState([]);
   const [editing, setEditing] = useState(null);
   const [formData, setFormData] = useState({ key: '', value: '' });
   const [loading, setLoading] = useState(false);
+  const [pwData, setPwData] = useState({ newPassword: '', confirmPassword: '' });
+  const [pwLoading, setPwLoading] = useState(false);
+  const [pwMsg, setPwMsg] = useState(null);
 
   useEffect(() => {
     fetchSettings();
@@ -74,12 +77,35 @@ const Settings = () => {
     setFormData({ key: '', value: '' });
   };
 
+  const handlePasswordChange = async (e) => {
+    e.preventDefault();
+    setPwMsg(null);
+    if (!pwData.newPassword || pwData.newPassword.length < 6) {
+      setPwMsg({ type: 'error', text: 'New password must be at least 6 characters long.' });
+      return;
+    }
+    if (pwData.newPassword !== pwData.confirmPassword) {
+      setPwMsg({ type: 'error', text: 'Passwords do not match. Please re-enter.' });
+      return;
+    }
+    setPwLoading(true);
+    try {
+      const res = await api.post('/auth/change-password', { newPassword: pwData.newPassword });
+      setPwMsg({ type: 'success', text: res.data?.message || 'Password successfully updated!' });
+      setPwData({ newPassword: '', confirmPassword: '' });
+    } catch (err) {
+      setPwMsg({ type: 'error', text: err.response?.data?.error || 'Failed to update password.' });
+    } finally {
+      setPwLoading(false);
+    }
+  };
+
   return (
     <>
       <div className="admin-content__header">
         <div className="admin-content__header-left">
           <h1>Settings</h1>
-          <p>Manage global key-value settings (e.g., site name, contact info)</p>
+          <p>Manage site configuration and administrator security</p>
         </div>
         <div className="admin-content__header-right">
           {!editing && (
@@ -176,6 +202,66 @@ const Settings = () => {
             </tbody>
           </table>
         </div>
+      </div>
+
+      {/* Change Admin Password Card */}
+      <div className="admin-card" style={{ marginTop: '2rem', borderTop: '4px solid var(--rotaract-blue, #004080)' }}>
+        <h3 className="admin-card__title" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+          <FaKey style={{ color: 'var(--rotaract-blue, #004080)' }} /> Change Admin Password
+        </h3>
+        <p style={{ color: 'var(--dark-gray)', fontSize: '0.9rem', marginBottom: '1.2rem' }}>
+          Update the password for administrator <strong>kingership321@gmail.com</strong>. This updates your password across both the local server and Supabase database.
+        </p>
+
+        {pwMsg && (
+          <div style={{
+            padding: '0.8rem 1rem',
+            borderRadius: '6px',
+            marginBottom: '1.2rem',
+            fontSize: '0.9rem',
+            background: pwMsg.type === 'success' ? '#ecfdf5' : '#fef2f2',
+            color: pwMsg.type === 'success' ? '#065f46' : '#b91c1c',
+            border: `1px solid ${pwMsg.type === 'success' ? '#a7f3d0' : '#fecaca'}`,
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem'
+          }}>
+            {pwMsg.type === 'success' ? <FaCheckCircle /> : <FaExclamationTriangle />}
+            {pwMsg.text}
+          </div>
+        )}
+
+        <form className="admin-form" onSubmit={handlePasswordChange} style={{ maxWidth: '600px' }}>
+          <div className="admin-form__grid" style={{ gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <div className="admin-form__group">
+              <label>New Password <span className="required">*</span></label>
+              <input
+                type="password"
+                placeholder="At least 6 characters"
+                value={pwData.newPassword}
+                onChange={e => setPwData(prev => ({ ...prev, newPassword: e.target.value }))}
+                required
+                minLength={6}
+              />
+            </div>
+            <div className="admin-form__group">
+              <label>Confirm New Password <span className="required">*</span></label>
+              <input
+                type="password"
+                placeholder="Re-enter new password"
+                value={pwData.confirmPassword}
+                onChange={e => setPwData(prev => ({ ...prev, confirmPassword: e.target.value }))}
+                required
+                minLength={6}
+              />
+            </div>
+          </div>
+          <div className="admin-form__actions" style={{ marginTop: '1rem' }}>
+            <button type="submit" className="btn-admin btn-admin--primary" disabled={pwLoading}>
+              <FaSave /> {pwLoading ? 'Updating Password...' : 'Save New Password'}
+            </button>
+          </div>
+        </form>
       </div>
     </>
   );

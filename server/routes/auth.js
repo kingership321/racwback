@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const { supabase, supabaseAdmin, canQuerySupabase, markSupabaseDown } = require('../utils/supabaseClient');
@@ -130,6 +132,71 @@ router.get('/me', authMiddleware, async (req, res) => {
   }
 
   res.json({ ...req.user, role: req.user?.role || 'user' });
+});
+
+// Change Admin Password
+router.post('/change-password', authMiddleware, async (req, res) => {
+  const localAdminEmail = (process.env.ADMIN_EMAIL || 'kingership321@gmail.com').toLowerCase().trim();
+  
+  // Verify admin permissions
+  if (req.user?.role !== 'admin' && req.user?.id !== 'local-admin-id' && req.user?.email?.toLowerCase().trim() !== localAdminEmail) {
+    return res.status(403).json({ error: 'Admin access required to change password' });
+  }
+
+  const { newPassword } = req.body;
+  if (!newPassword || newPassword.length < 6) {
+    return res.status(400).json({ error: 'New password must be at least 6 characters long' });
+  }
+
+  // 1. Update in-memory process.env
+  process.env.ADMIN_PASSWORD = newPassword;
+
+  // 2. Persist to server/.env so it survives server restarts
+  try {
+    const envPath = path.resolve(__dirname, '..', '.env');
+    if (fs.existsSync(envPath)) {
+      let content = fs.readFileSync(envPath, 'utf8');
+      if (content.includes('ADMIN_PASSWORD=')) {
+        content = content.replace(/ADMIN_PASSWORD=.*/g, `ADMIN_PASSWORD=${newPassword}`);
+      } else {
+        content += `\nADMIN_PASSWORD=${newPassword}`;
+      }
+      fs.writeFileSync(envPath, content, 'utf8');
+    }
+  } catch (envErr) {
+    console.warn('Could not write to server/.env:', envErr.message);
+  }
+
+  // 3. Update Supabase Auth if online
+  let supabaseUpdated = false;
+  if (canQuerySupabase() && supabaseAdmin) {
+    try {
+      const targetEmail = req.user?.email || localAdminEmail;
+      const { data: userList } = await supabaseAdmin.auth.admin.listUsers();
+      const targetUser = userList?.users?.find(u => u.email?.toLowerCase() === targetEmail.toLowerCase());
+      
+      const targetId = targetUser?.id || (req.user.id !== 'local-admin-id' ? req.user.id : null);
+      if (targetId) {
+        const { error: updateErr } = await supabaseAdmin.auth.admin.updateUserById(targetId, {
+          password: newPassword
+        });
+        if (!updateErr) {
+          supabaseUpdated = true;
+        } else {
+          console.warn('Supabase password update error:', updateErr.message);
+        }
+      }
+    } catch (sbErr) {
+      console.warn('Supabase admin update error:', sbErr.message);
+    }
+  }
+
+  return res.json({
+    success: true,
+    message: supabaseUpdated 
+      ? 'Password successfully updated for both local server and Supabase database!'
+      : 'Password updated for local server (Supabase is currently offline, sync will apply when reconnected).'
+  });
 });
 
 module.exports = router;
