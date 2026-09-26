@@ -1,21 +1,28 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './Auth.css';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
+  const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrorMsg('');
+    setLoading(true);
     try {
       await login(email, password);
       navigate('/admin');
     } catch (err) {
-      alert(err.response?.data?.error || err.message);
+      const message = err.response?.data?.error || err.response?.data?.message || err.message;
+      setErrorMsg(message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -26,6 +33,22 @@ const Login = () => {
           <h2 className="auth-card__title">Login</h2>
           <p className="auth-card__subtitle">Welcome back to RACTU Admin</p>
         </div>
+
+        {errorMsg && (
+          <div className="auth-alert auth-alert--error" style={{
+            padding: '12px 16px',
+            marginBottom: '16px',
+            borderRadius: '8px',
+            backgroundColor: '#fef2f2',
+            border: '1px solid #fecaca',
+            color: '#b91c1c',
+            fontSize: '14px',
+            lineHeight: 1.5
+          }}>
+            {errorMsg}
+          </div>
+        )}
+
         <form className="auth-form" onSubmit={handleSubmit}>
           <div className="auth-form__group">
             <label className="auth-form__label">Email</label>
@@ -49,12 +72,10 @@ const Login = () => {
               required
             />
           </div>
-          <button type="submit" className="auth-form__button">Login</button>
+          <button type="submit" className="auth-form__button" disabled={loading}>
+            {loading ? 'Logging in...' : 'Login'}
+          </button>
         </form>
-        <div className="auth-card__footer">
-          <span className="text-gray">Don't have an account?</span>{' '}
-          <Link to="/signup">Sign up</Link>
-        </div>
       </div>
     </div>
   );

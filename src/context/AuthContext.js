@@ -43,26 +43,8 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
-  const signup = async (email, password, full_name) => {
-    try {
-      const res = await api.post('/auth/signup', { email, password, full_name });
-      const { session } = res.data;
-      if (session) {
-        localStorage.setItem('token', session.access_token);
-        const meRes = await api.get('/auth/me');
-        setUser(meRes.data);
-        return meRes.data;
-      } else {
-        // If no session (e.g., email confirmation required), still return user
-        return res.data.user;
-      }
-    } catch (error) {
-      throw error;
-    }
-  };
-
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, signup }}>
+    <AuthContext.Provider value={{ user, loading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

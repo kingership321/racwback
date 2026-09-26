@@ -16,11 +16,36 @@ if (supabaseUrl && supabaseAnonKey) {
   
   // Admin client (bypass RLS)
   supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey || supabaseAnonKey);
-  
   console.log('✅ Supabase client initialized');
 } else {
   console.warn('⚠️ Supabase credentials not found in environment variables.');
-  console.warn('   Set SUPABASE_URL and SUPABASE_ANON_KEY in .env to enable Supabase features.');
 }
 
-module.exports = { supabase, supabaseAdmin };
+let isSupabaseAvailable = true;
+let lastFailureTime = 0;
+const SUPABASE_RETRY_INTERVAL_MS = 60 * 1000; // Retry every 60s if offline
+
+function canQuerySupabase() {
+  if (!supabaseAdmin) return false;
+  if (!isSupabaseAvailable) {
+    if (Date.now() - lastFailureTime > SUPABASE_RETRY_INTERVAL_MS) {
+      isSupabaseAvailable = true;
+      return true;
+    }
+    return false;
+  }
+  return true;
+}
+
+function markSupabaseDown(error) {
+  isSupabaseAvailable = false;
+  lastFailureTime = Date.now();
+  console.warn(`⚠️ Supabase connection unavailable (${error?.message || error}). Serving local fallback store for next 60s.`);
+}
+
+module.exports = {
+  supabase,
+  supabaseAdmin,
+  canQuerySupabase,
+  markSupabaseDown
+};

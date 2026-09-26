@@ -1,264 +1,9 @@
-// import './BoardMemberSection.css';
-
-// /* Image Import Section */
-// import image16 from '../assets/mee.jpg';
-// import image2 from '../assets/dipa.jpg';
-// import image6 from '../assets/junu.jpg';
-// import image18 from '../assets/jiban.jpg';
-// import image9 from '../assets/sophia.jpg';
-// import image10 from '../assets/amrit.jpg';
-// import image11 from '../assets/neha.jpg';
-// import image13 from '../assets/ankita.jpg';
-// import image14 from '../assets/nabin.jpg';
-// import image1 from '../assets/dipak.jpg';
-// import image21 from '../assets/dipesh.jpg';
-// import image4 from '../assets/indra.jpg';
-// import image5 from '../assets/prati.jpeg';
-// import image7 from '../assets/ritu.jpg';
-// import image12 from '../assets/rajbir.jpg';
-// import image3 from '../assets/karishma.jpg';
-// import image8 from '../assets/bulbul.jpg';
-// import image15 from '../assets/shree.jpg';
-
-// const BoardMemberSection = () => {
-//   const boardMembers = [
-//     {
-//       id: 1,
-//       name: "Rtr. Dipak Dhakal",
-//       position: "President",
-//       image: image1,
-//       facebook: "https://www.facebook.com/deepak.dhakal.180",
-//       linkedin: "https://www.linkedin.com/in/dipak-dhakal-049813376/",
-//       email: "rajan.shrestha@example.com"
-//     },
-//     {
-//       id: 2,
-//       name: "Rtr. Deepa Acharya",
-//       position: "Immediate Past President",
-//       image: image2,
-//       facebook: "https://www.facebook.com/deepak.dhakal.180",
-//       linkedin: "https://www.linkedin.com/in/dipak-dhakal-049813376/",
-//       email: "acharyadeepa55@gmail.com"
-//     },
-//     {
-//       id: 21,
-//       name: "Rtr. Dipesh Rai",
-//       position: "Vice President & President Elect",
-//       image: image21,
-//       facebook: "https://www.facebook.com/rai1dipesh",
-//       linkedin: "https://www.linkedin.com/in/dipak-dhakal-049813376/",
-//       email: "Dipesh10312@gmail.com"
-//     },
-//     {
-//       id: 3,
-//       name: "Rtr. Karishma Dhami",
-//       position: "Secretary",
-//       image: image3,
-//       facebook: "https://www.facebook.com/kareeshma0",
-//       linkedin: "https://linkedin.com/in/rajan-shrestha",
-//       email: "kreeshmadhami@gmail.com"
-//     },
-//     {
-//       id: 4,
-//       name: "Rtr. Indra Maya Limbu",
-//       position: "Treasurer",
-//       image: image4,
-//       facebook: "https://www.facebook.com/sital.limbu.566",
-//       linkedin: "https://linkedin.com/in/rajan-shrestha",
-//       email: "rajan.shrestha@example.com"
-//     },
-//     {
-//       id: 5,
-//       name: "Rtr. Pratiksha Bhattarai",
-//       position: "Joint Secretary & Secretary Elect",
-//       image: image5,
-//       facebook: "https://facebook.com/rajan.shrestha",
-//       linkedin: "https://linkedin.com/in/rajan-shrestha",
-//       email: "pratikshya.2600@gmail.com"
-//     },
-//     {
-//       id: 6,
-//       name: "Rtr. Junu Dhakal",
-//       position: "Joint Treasurer & Treasurer Elect",
-//       image: image6,
-//       facebook: "https://facebook.com/rajan.shrestha",
-//       linkedin: "https://linkedin.com/in/rajan-shrestha",
-//       email: "rajan.shrestha@example.com"
-//     },
-//     {
-//       id: 7,
-//       name: "Rtr. Ritu Chauhan",
-//       position: "Club Administration Chair",
-//       image: image7,
-//       facebook: "https://facebook.com/rajan.shrestha",
-//       linkedin: "https://linkedin.com/in/rajan-shrestha",
-//       email: "seasonchn97@gmail.com"
-//     },
-//     {
-//       id: 8,
-//       name: "Rtr. Bulbul Shrestha",
-//       position: "Joint Club Administration Chair",
-//       image: image8,
-//       facebook: "https://facebook.com/rajan.shrestha",
-//       linkedin: "https://linkedin.com/in/rajan-shrestha",
-//       email: "bulbulshrestha1@gmail.com"
-//     },
-//     {
-//       id: 9,
-//       name: "Rtr. Sophia Bista",
-//       position: "Service Project Chair",
-//       image: image9,
-//       facebook: "https://facebook.com/rajan.shrestha",
-//       linkedin: "https://linkedin.com/in/rajan-shrestha",
-//       email: "sophiabista3@gmail.com"
-//     },
-//     {
-//       id: 10,
-//       name: "Rtr. Amrit Thapa",
-//       position: "Joint Service Project Chair",
-//       image: image10,
-//       facebook: "https://facebook.com/rajan.shrestha",
-//       linkedin: "https://linkedin.com/in/rajan-shrestha",
-//       email: "amritthapa5546@gmail.com"
-//     },
-//     {
-//       id: 11,
-//       name: "Rtr. Neha Regmi",
-//       position: "Professional Development Chair",
-//       image: image11,
-//       facebook: "https://facebook.com/rajan.shrestha",
-//       linkedin: "https://linkedin.com/in/rajan-shrestha",
-//       email: "neharegmi28@gmail.com"
-//     },
-//     {
-//       id: 12,
-//       name: "Rtr. Rajbir Budhathoki",
-//       position: "Joint Professional Development Chair",
-//       image: image12,
-//       facebook: "https://facebook.com/rajan.shrestha",
-//       linkedin: "https://linkedin.com/in/rajan-shrestha",
-//       email: "rajbudhathoki09@gmail.com"
-//     },
-//     {
-//       id: 13,
-//       name: "Rtr. Ankita Thakur",
-//       position: "International Service Chair",
-//       image: image13,
-//       facebook: "https://www.facebook.com/sital.limbu.566",
-//       linkedin: "https://linkedin.com/in/rajan-shrestha",
-//       email: "thakurankita738@gmail.com"
-//     },
-//     {
-//       id: 14,
-//       name: "Rtr. Nabin Regmi",
-//       position: "Joint International Service Chair",
-//       image: image14,
-//       facebook: "https://facebook.com/rajan.shrestha",
-//       linkedin: "https://linkedin.com/in/rajan-shrestha",
-//       email: "nabinspg@gmail.com"
-//     },
-//     {
-//       id: 15,
-//       name: "Rtr. Shreepriya Ghimire",
-//       position: "Membership Chair",
-//       image: image15,
-//       facebook: "https://facebook.com/rajan.shrestha",
-//       linkedin: "https://linkedin.com/in/rajan-shrestha",
-//       email: "shreepriyaghimire1123@gmail.com"
-//     },
-//     {
-//       id: 16,
-//       name: "Rtr. Keshav Baniya",
-//       position: "IT Officer",
-//       image: image16,
-//       facebook: "https://www.facebook.com/keshav.baniya/",
-//       linkedin: "https://www.linkedin.com/in/keshavbaniya/",
-//       email: "kingership321@gmail.com"
-//     },
-//     {
-//       id: 17,
-//       name: "Rtr. Jivan Shah",
-//       position: "Seargent at Arms",
-//       image: image18,
-//       facebook: "https://facebook.com/rajan.shrestha",
-//       linkedin: "https://linkedin.com/in/rajan-shrestha",
-//       email: "shahsachin554@gmail.com"
-//     }
-//   ];
-
-//   return (
-//     <section className="board-members">
-//       <div className="container">
-//         <div className="board-members__header text-center mb-5">
-//           <h2 className="heading-2 heading-underline heading-center">Our Board Members</h2>
-//           <p className="lead text-gray">
-//             Meet the dedicated team leading our club towards positive change
-//           </p>
-//         </div>
-        
-//         <div className="board-members__grid grid grid-4">
-//           {boardMembers.map(member => (
-//             <div key={member.id} className="board-member-card card">
-//               <div className="board-member-card__image">
-//                 <img 
-//                   src={member.image} 
-//                   alt={member.name}
-//                   className="board-member-card__photo img-responsive img-circle"
-//                 />
-//                 <div className="board-member-card__overlay">
-//                   <div className="board-member-card__social-links">
-//                     {/* <a 
-//                       href={member.facebook} 
-//                       target="_blank" 
-//                       rel="noopener noreferrer" 
-//                       aria-label="Facebook"
-//                       className="board-member-card__social-link"
-//                     >
-//                       <i className="fab fa-facebook-f"></i>
-//                     </a>
-//                     <a 
-//                       href={member.linkedin} 
-//                       target="_blank" 
-//                       rel="noopener noreferrer" 
-//                       aria-label="LinkedIn"
-//                       className="board-member-card__social-link"
-//                     >
-//                       <i className="fab fa-linkedin-in"></i>
-//                     </a> */}
-//                     <a 
-//                       href={`mailto:${member.email}`} 
-//                       aria-label="Email"
-//                       className="board-member-card__social-link"
-//                     >
-//                       <i className="fas fa-envelope"></i>
-//                     </a>
-//                   </div>
-//                 </div>
-//               </div>
-              
-//               <div className="board-member-card__info text-center">
-//                 <h3 className="board-member-card__name heading-5">{member.name}</h3>
-//                 <p className="board-member-card__position body-small">{member.position}</p>
-//               </div>
-//             </div>
-//           ))}
-//         </div>
-//       </div>
-//     </section>
-//   );
-// };
-
-// export default BoardMemberSection;
-
-
-
-
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { FaFacebook, FaLinkedin, FaEnvelope } from 'react-icons/fa';
 import api from '../services/api';
+import { defaultBoardMembers } from '../data/defaultData';
 import './BoardMemberSection.css';
-
-// ... image imports removed (we'll use URLs from API)
 
 const BoardMemberSection = () => {
   const [members, setMembers] = useState([]);
@@ -274,9 +19,15 @@ const BoardMemberSection = () => {
     const fetchMembers = async () => {
       try {
         const res = await api.get('/board');
-        setMembers(Array.isArray(res.data) ? res.data : []);
+        const data = Array.isArray(res?.data) ? res.data : [];
+        if (data.length > 0) {
+          setMembers(data);
+        } else {
+          setMembers(defaultBoardMembers);
+        }
       } catch (error) {
-        console.error('Error fetching board members:', error);
+        console.error('Error fetching board members, using fallback:', error);
+        setMembers(defaultBoardMembers);
       } finally {
         setLoading(false);
       }
@@ -284,14 +35,24 @@ const BoardMemberSection = () => {
     fetchMembers();
   }, []);
 
-  if (loading) return <div>Loading board members...</div>;
-
+  const allMembers = members.length > 0 ? members : defaultBoardMembers;
   const currentRotaYear = getCurrentRotaYear();
-  const boardMembersThisYear = members.filter((member) => {
+
+  // Filter for board members of current rota year
+  const yearFiltered = allMembers.filter((member) => {
     const year = Number(member.year);
     const isBoard = member.role !== 'general';
-    return isBoard && year === currentRotaYear;
+    return isBoard && (year === currentRotaYear || !member.year);
   });
+
+  // If year filter matches none, fallback to all board members
+  const boardMembersToDisplay = yearFiltered.length > 0
+    ? yearFiltered
+    : allMembers.filter(m => m.role !== 'general');
+
+  if (loading && members.length === 0) {
+    return <div className="container text-center" style={{ padding: '2rem' }}>Loading board members...</div>;
+  }
 
   return (
     <section className="board-members">
@@ -304,25 +65,51 @@ const BoardMemberSection = () => {
         </div>
 
         <div className="board-members__grid">
-          {boardMembersThisYear.length > 0 ? boardMembersThisYear.map(member => (
-            <div key={member.id} className="board-member-card card">
-              <div className="board-member-card__image">
-                <img 
-                  src={member.image_url} 
-                  alt={member.name}
-                  className="board-member-card__photo img-responsive img-circle"
-                />
+          {boardMembersToDisplay.map((member) => {
+            const fallbackMember = defaultBoardMembers.find(m => m.name === member.name || m.id === member.id);
+            const imageSrc = member.image_url || fallbackMember?.image_url;
+            const fb = member.facebook_url || member.facebook || fallbackMember?.facebook_url;
+            const li = member.linkedin_url || member.linkedin || fallbackMember?.linkedin_url;
+            const em = member.email || fallbackMember?.email;
+
+            return (
+              <div key={member.id} className="board-member-card card">
+                <div className="board-member-card__image">
+                  <img 
+                    src={imageSrc} 
+                    alt={member.name}
+                    className="board-member-card__photo img-responsive img-circle"
+                    onError={(e) => {
+                      if (fallbackMember?.image_url && e.target.src !== fallbackMember.image_url) {
+                        e.target.src = fallbackMember.image_url;
+                      }
+                    }}
+                  />
+                  <div className="board-member-card__socials">
+                    {fb && (
+                      <a href={fb} target="_blank" rel="noopener noreferrer" className="board-member-card__social-link" aria-label="Facebook">
+                        <FaFacebook />
+                      </a>
+                    )}
+                    {li && (
+                      <a href={li} target="_blank" rel="noopener noreferrer" className="board-member-card__social-link" aria-label="LinkedIn">
+                        <FaLinkedin />
+                      </a>
+                    )}
+                    {em && (
+                      <a href={`mailto:${em}`} className="board-member-card__social-link" aria-label="Email">
+                        <FaEnvelope />
+                      </a>
+                    )}
+                  </div>
+                </div>
+                <div className="board-member-card__info text-center">
+                  <h3 className="board-member-card__name heading-5">{member.name}</h3>
+                  <p className="board-member-card__position body-small">{member.position}</p>
+                </div>
               </div>
-              <div className="board-member-card__info text-center">
-                <h3 className="board-member-card__name heading-5">{member.name}</h3>
-                <p className="board-member-card__position body-small">{member.position}</p>
-              </div>
-            </div>
-          )) : (
-            <div className="board-members__empty text-center">
-              <p className="lead text-gray">No board members found for the current rota year.</p>
-            </div>
-          )}
+            );
+          })}
         </div>
 
         <div className="board-members__cta">

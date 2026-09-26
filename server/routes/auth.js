@@ -1,90 +1,135 @@
 const express = require('express');
-const { supabase, supabaseAdmin } = require('../utils/supabaseClient');
+const jwt = require('jsonwebtoken');
+const { supabase, supabaseAdmin, canQuerySupabase, markSupabaseDown } = require('../utils/supabaseClient');
 const authMiddleware = require('../middleware/auth');
 const router = express.Router();
 
-// Middleware to check if Supabase is initialized
-const checkSupabaseConfig = (req, res, next) => {
-  if (!supabase) {
-    return res.status(503).json({ 
-      error: 'Service Unavailable',
-      message: 'Authentication service is not configured. Please set SUPABASE_URL and SUPABASE_ANON_KEY environment variables.'
-    });
-  }
-  next();
+const isNetworkError = (err) => {
+  if (!err) return false;
+  const msg = (err.message || '').toLowerCase();
+  const code = (err.code || '').toLowerCase();
+  return msg.includes('fetch failed') || msg.includes('enotfound') || msg.includes('econnrefused') || code === 'enotfound' || code === 'econnrefused';
 };
-
-// Apply config check to all auth routes
-router.use(checkSupabaseConfig);
-
-// Sign up
-router.post('/signup', async (req, res) => {
-  const { email, password, full_name } = req.body;
-  try {
-    const { data, error } = await supabase.auth.signUp({ email, password });
-    if (error) throw error;
-    if (data.user) {
-      const baseUsername = (full_name || email || 'user')
-        .toLowerCase()
-        .trim()
-        .replace(/[^a-z0-9._-]/g, '_')
-        .replace(/_+/g, '_')
-        .slice(0, 24) || 'user';
-      const username = `${baseUsername}_${data.user.id.slice(0, 8)}`;
-
-      // Create a matching public user row so the profiles foreign key can succeed.
-      const { error: userRowError } = await supabaseAdmin
-        .from('users')
-        .upsert([{ id: data.user.id, username }], { onConflict: 'id' });
-
-      if (userRowError) {
-        console.error('User row create error:', userRowError);
-        return res.status(500).json({ error: 'Failed to initialize user record' });
-      }
-
-      // Use admin client to insert profile (bypass RLS)
-      const { error: profileError } = await supabaseAdmin
-        .from('profiles')
-        .upsert([{ id: data.user.id, full_name, role: 'user' }], { onConflict: 'id' });
-
-      if (profileError) {
-        console.error('Profile insert error:', profileError);
-        return res.status(500).json({ error: 'Failed to create profile' });
-      }
-    }
-    res.status(201).json({ user: data.user, session: data.session });
-  } catch (err) {
-    console.error('Signup error:', err);
-    res.status(400).json({ error: err.message });
-  }
-});
 
 // Sign in
 router.post('/signin', async (req, res) => {
   const { email, password } = req.body;
-  console.log('Login attempt:', email);
-  try {
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) {
-      console.log('Signin error:', error);
-      throw error;
+  const normalizedEmail = (email || '').toLowerCase().trim();
+  const localAdminEmail = (process.env.ADMIN_EMAIL || 'kingership321@gmail.com').toLowerCase().trim();
+  const localAdminPassword = process.env.ADMIN_PASSWORD || 'admin123';
+
+  console.log('Login attempt:', normalizedEmail);
+
+  // 1. Check admin credentials (supports BOTH online and offline seamlessly)
+  if (normalizedEmail === localAdminEmail && password === localAdminPassword) {
+    if (canQuerySupabase() && supabase) {
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({ email: normalizedEmail, password });
+        if (!error && data?.session) {
+          return res.json({ user: data.user, session: data.session });
+        }
+      } catch (err) {
+        console.warn('Supabase signin attempt failed, falling back to local admin session:', err.message);
+      }
     }
-    res.json({ user: data.user, session: data.session });
-  } catch (err) {
-    console.error('Signin catch:', err);
-    res.status(401).json({ error: err.message });
+
+    // Offline / Fallback admin token
+    const token = jwt.sign(
+      { id: 'local-admin-id', email: localAdminEmail, role: 'admin', full_name: 'Administrator' },
+      process.env.JWT_SECRET || 'rctu-jwt-secret-key',
+      { expiresIn: '7d' }
+    );
+    return res.json({
+      user: {
+        id: 'local-admin-id',
+        email: localAdminEmail,
+        role: 'admin',
+        user_metadata: { full_name: 'Administrator' }
+      },
+      session: {
+        access_token: token,
+        token_type: 'bearer',
+        expires_in: 604800
+      }
+    });
   }
+
+  // 2. Try Supabase for other users if available
+  if (canQuerySupabase() && supabase) {
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({ email: normalizedEmail, password });
+      if (error) {
+        if (isNetworkError(error)) {
+          markSupabaseDown(error);
+          return res.status(503).json({
+            error: `Database connection failed: Unable to connect to Supabase at ${process.env.SUPABASE_URL || 'configured URL'} (the project may be paused in your Supabase dashboard). For admin login, use ${localAdminEmail} / ${localAdminPassword}`
+          });
+        }
+        return res.status(401).json({ error: error.message });
+      }
+      return res.json({ user: data.user, session: data.session });
+    } catch (err) {
+      if (isNetworkError(err)) {
+        markSupabaseDown(err);
+        return res.status(503).json({
+          error: `Database connection failed: Unable to connect to Supabase at ${process.env.SUPABASE_URL || 'configured URL'} (the project may be paused in your Supabase dashboard). For admin login, use ${localAdminEmail} / ${localAdminPassword}`
+        });
+      }
+      console.error('Signin catch error:', err);
+      return res.status(401).json({ error: err.message || 'Authentication failed' });
+    }
+  }
+
+  // 3. Supabase offline and non-matching credentials
+  return res.status(503).json({
+    error: `Database connection failed: Unable to reach Supabase. For admin login, use ${localAdminEmail} / ${localAdminPassword}`
+  });
+});
+
+// Alias /login -> /signin
+router.post('/login', (req, res, next) => {
+  req.url = '/signin';
+  router.handle(req, res, next);
+});
+
+// Sign up - Disabled for single-admin system
+router.post('/signup', (req, res) => {
+  return res.status(403).json({
+    error: 'Registration is disabled. This website is managed by a single administrator account.'
+  });
 });
 
 // Get current user (with role)
 router.get('/me', authMiddleware, async (req, res) => {
-  const { data: profile, error } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('id', req.user.id)
-    .single();
-  if (error) return res.status(500).json({ error: error.message });
-  res.json({ ...req.user, role: profile?.role || 'user' });
+  // If local admin or role already defined on req.user
+  if (req.user?.role === 'admin' || req.user?.id === 'local-admin-id' || req.user?.email === 'kingership321@gmail.com') {
+    return res.json({
+      id: req.user.id,
+      email: req.user.email,
+      role: 'admin',
+      user_metadata: req.user.user_metadata || { full_name: 'Administrator' }
+    });
+  }
+
+  if (canQuerySupabase() && supabase) {
+    try {
+      const { data: profile, error } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', req.user.id)
+        .single();
+
+      if (!error && profile) {
+        return res.json({ ...req.user, role: profile.role || 'user' });
+      }
+    } catch (err) {
+      if (isNetworkError(err)) {
+        markSupabaseDown(err);
+      }
+    }
+  }
+
+  res.json({ ...req.user, role: req.user?.role || 'user' });
 });
 
 module.exports = router;

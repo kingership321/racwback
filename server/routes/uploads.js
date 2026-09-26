@@ -1,7 +1,8 @@
 const express = require('express');
 const multer = require('multer');
+const fs = require('fs');
 const path = require('path');
-const { supabaseAdmin } = require('../utils/supabaseClient');
+const { supabaseAdmin, canQuerySupabase, markSupabaseDown } = require('../utils/supabaseClient');
 const authMiddleware = require('../middleware/auth');
 const adminMiddleware = require('../middleware/admin');
 
@@ -23,26 +24,58 @@ router.post('/', authMiddleware, adminMiddleware, upload.single('file'), async (
   const fileName = `${Date.now()}-${req.file.originalname.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
   const storagePath = folder ? `${folder}/${fileName}` : fileName;
 
-  const { data, error } = await supabaseAdmin.storage
-    .from(bucketName)
-    .upload(storagePath, req.file.buffer, {
-      cacheControl: '3600',
-      upsert: false,
-      contentType: req.file.mimetype,
-    });
+  if (canQuerySupabase() && supabaseAdmin) {
+    try {
+      const { data, error } = await supabaseAdmin.storage
+        .from(bucketName)
+        .upload(storagePath, req.file.buffer, {
+          cacheControl: '3600',
+          upsert: false,
+          contentType: req.file.mimetype,
+        });
 
-  if (error) {
-    return res.status(500).json({ error: error.message });
+      if (!error) {
+        const { data: publicUrlData } = supabaseAdmin.storage.from(bucketName).getPublicUrl(storagePath);
+        return res.status(201).json({
+          url: publicUrlData?.publicUrl || null,
+          path: storagePath,
+          name: req.file.originalname,
+          bucket: bucketName,
+          key: data?.path || storagePath,
+        });
+      }
+      markSupabaseDown(error);
+    } catch (err) {
+      markSupabaseDown(err);
+    }
   }
 
-  const { data: publicUrlData } = supabaseAdmin.storage.from(bucketName).getPublicUrl(storagePath);
-  return res.status(201).json({
-    url: publicUrlData?.publicUrl || null,
-    path: storagePath,
-    name: req.file.originalname,
-    bucket: bucketName,
-    key: data?.path || storagePath,
-  });
+  // Fallback to local static storage
+  try {
+    const localDir = path.resolve(__dirname, '..', '..', 'public', 'assets', 'uploads');
+    if (!fs.existsSync(localDir)) {
+      fs.mkdirSync(localDir, { recursive: true });
+    }
+    const localFilePath = path.join(localDir, fileName);
+    fs.writeFileSync(localFilePath, req.file.buffer);
+
+    // Also copy to src/assets/uploads if it exists
+    const srcDir = path.resolve(__dirname, '..', '..', 'src', 'assets', 'uploads');
+    if (fs.existsSync(path.dirname(srcDir))) {
+      if (!fs.existsSync(srcDir)) fs.mkdirSync(srcDir, { recursive: true });
+      fs.writeFileSync(path.join(srcDir, fileName), req.file.buffer);
+    }
+
+    return res.status(201).json({
+      url: `/assets/uploads/${fileName}`,
+      path: `uploads/${fileName}`,
+      name: req.file.originalname,
+      bucket: 'local',
+      key: fileName
+    });
+  } catch (fsErr) {
+    return res.status(500).json({ error: 'Failed to store uploaded file: ' + fsErr.message });
+  }
 });
 
 router.get('/', authMiddleware, adminMiddleware, async (req, res) => {

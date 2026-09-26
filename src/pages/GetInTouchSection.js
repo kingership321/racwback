@@ -23,9 +23,9 @@ const GetInTouchSection = () => {
             </div>
             <h3 className="contact-card-title heading-5">President's Contact</h3>
             <div className="contact-card-content">
-              <p className="contact-name body-large font-semibold">Dipak Dhakal</p>
+              <p className="contact-name body-large font-semibold">Rtr. Dipesh Rai</p>
               <p className="contact-phone body-small">
-                <FaPhone className="phone-icon" /> +977-9867996475
+                <FaPhone className="phone-icon" /> +977-9762416063
               </p>
             </div>
           </div>

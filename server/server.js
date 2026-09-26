@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
@@ -14,6 +15,8 @@ const previousBoardsRoutes = require('./routes/previousBoards');
 const settingsRoutes = require('./routes/settings');
 const upcomingProgramsRoutes = require('./routes/upcomingPrograms');
 const uploadsRoutes = require('./routes/uploads');
+const syncRoutes = require('./routes/sync');
+const { checkSupabaseHealth, syncAllToSupabase } = require('./utils/syncService');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -63,6 +66,8 @@ app.use(cors({
 
 // ========== Middleware ==========
 app.use(express.json());
+app.use('/assets', express.static(path.join(__dirname, '..', 'public', 'assets')));
+app.use('/assets', express.static(path.join(__dirname, '..', 'src', 'assets')));
 
 // ========== Routes ==========
 app.use('/api/auth', authRoutes);
@@ -74,8 +79,10 @@ app.use('/api/stats', statsRoutes);
 app.use('/api/values', valuesRoutes);
 app.use('/api/themes', themesRoutes);
 app.use('/api/previousboards', previousBoardsRoutes);
+app.use('/api/previous-boards', previousBoardsRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/uploads', uploadsRoutes);
+app.use('/api/sync', syncRoutes);
 
 // ========== Health Check ==========
 app.get('/api/health', (req, res) => {
@@ -100,6 +107,7 @@ app.get('/', (req, res) => {
       themes: '/api/themes',
       previousBoards: '/api/previousboards',
       settings: '/api/settings',
+      sync: '/api/sync',
     },
     timestamp: new Date().toISOString(),
   });
@@ -125,3 +133,22 @@ app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
   console.log(`🌐 Allowed origins: ${allowedOrigins.join(', ')}`);
 });
+
+// ========== Auto-Sync Monitor ==========
+// Detects when Supabase comes back online and automatically syncs all offline local changes!
+let wasSupabaseOffline = true;
+setInterval(async () => {
+  try {
+    const isOnline = await checkSupabaseHealth();
+    if (isOnline && wasSupabaseOffline) {
+      console.log('🔄 Supabase is back online! Automatically syncing offline local changes to Supabase...');
+      const syncRes = await syncAllToSupabase();
+      console.log('✅ Auto-sync completed:', syncRes.results);
+      wasSupabaseOffline = false;
+    } else if (!isOnline) {
+      wasSupabaseOffline = true;
+    }
+  } catch (err) {
+    // quiet background retry
+  }
+}, 30000); // Check every 30 seconds

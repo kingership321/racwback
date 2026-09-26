@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import api from '../services/api';
 import './CharterPresident.css';
-import ractuLogo from '../assets/logo1.jpg'; // keep logo, but can be made dynamic later
+import ractuLogo from '../assets/logo1.jpg';
+import { defaultCharterMessages } from '../data/defaultData';
 
 const CharterPresident = () => {
   const [messages, setMessages] = useState([]);
@@ -11,9 +12,15 @@ const CharterPresident = () => {
     const fetchMessages = async () => {
       try {
         const res = await api.get('/charter');
-        setMessages(res.data);
+        const data = Array.isArray(res?.data) ? res.data : [];
+        if (data.length > 0) {
+          setMessages(data);
+        } else {
+          setMessages(defaultCharterMessages);
+        }
       } catch (error) {
-        console.error('Error fetching charter messages:', error);
+        console.error('Error fetching charter messages, using fallback:', error);
+        setMessages(defaultCharterMessages);
       } finally {
         setLoading(false);
       }
@@ -21,26 +28,42 @@ const CharterPresident = () => {
     fetchMessages();
   }, []);
 
-  if (loading) return <div className="container" style={{ padding: '2rem' }}>Loading...</div>;
+  const displayedMessages = messages.length > 0 ? messages : defaultCharterMessages;
 
-  const renderMessage = (messageArray) => {
-    if (!messageArray || !Array.isArray(messageArray)) return null;
-    return messageArray.map((para, idx) => (
-      <p key={idx} className="charter-president__paragraph body-large">
-        {para.split('\n').map((line, i) => (
-          <React.Fragment key={i}>
-            {line}
-            {i < para.split('\n').length - 1 && <br />}
-          </React.Fragment>
-        ))}
-      </p>
-    ));
+  if (loading && messages.length === 0) {
+    return <div className="container" style={{ padding: '2rem', textAlign: 'center' }}>Loading leadership messages...</div>;
+  }
+
+  const renderMessage = (messageContent) => {
+    if (!messageContent) return null;
+    const paras = Array.isArray(messageContent)
+      ? messageContent
+      : typeof messageContent === 'string'
+      ? messageContent.split('\n\n')
+      : [];
+
+    return paras.map((para, idx) => {
+      const isGreeting = idx === 0 && (para.includes('Greetings!') || para.includes('Blissful') || para.includes('Dear'));
+      return (
+        <p
+          key={idx}
+          className={`charter-president__paragraph body-large ${isGreeting ? 'charter-president__greeting font-semibold' : ''}`}
+        >
+          {para.split('\n').map((line, i) => (
+            <React.Fragment key={i}>
+              {line}
+              {i < para.split('\n').length - 1 && <br />}
+            </React.Fragment>
+          ))}
+        </p>
+      );
+    });
   };
 
   return (
     <div className="charter-president">
       <div className="container">
-        {messages.map((item) => {
+        {displayedMessages.map((item) => {
           const isCharterPresident = item.type === 'charter_president';
           const isDRR = item.type === 'drr';
           const isZRR = item.type === 'zrr';
@@ -53,7 +76,9 @@ const CharterPresident = () => {
           else if (isZRR) headerTitle = 'Message from Our ZRR';
           else if (isParent) headerTitle = 'Message from Our Parent Club President';
           else if (isSister) headerTitle = 'Message from Our Sister Club President';
-          else headerTitle = 'Message';
+          else headerTitle = item.title || 'Message';
+
+          const fallbackImage = defaultCharterMessages.find(m => m.type === item.type)?.image_url;
 
           return (
             <div key={item.id} className="charter-president__card card card-lg">
@@ -65,10 +90,14 @@ const CharterPresident = () => {
                 <div className="charter-president__image-container">
                   <div className="charter-president__image-wrapper">
                     <img
-                      src={item.image_url || '/placeholder-image.jpg'} // fallback
+                      src={item.image_url || fallbackImage}
                       alt={item.name}
                       className="charter-president__image-fixed"
-                      onError={(e) => { e.target.src = '/placeholder-image.jpg'; }} // handle broken images
+                      onError={(e) => {
+                        if (fallbackImage && e.target.src !== fallbackImage) {
+                          e.target.src = fallbackImage;
+                        }
+                      }}
                     />
                   </div>
                 </div>
@@ -118,4 +147,4 @@ const CharterPresident = () => {
   );
 };
 
-export default CharterPresident;
+export default CharterPresident;

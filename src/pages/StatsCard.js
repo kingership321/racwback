@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import api from '../services/api';
+import { defaultStats } from '../data/defaultData';
 import './StatsCard.css';
 
 const StatsSection = () => {
@@ -10,14 +11,13 @@ const StatsSection = () => {
   const countersRef = useRef([]);
   const animationStarted = useRef(false);
 
-  // 1. Fetch Stats safely
+  // 1. Fetch Stats safely with fallback
   useEffect(() => {
     const fetchStats = async () => {
       try {
         setLoading(true);
         const res = await api.get('/stats');
 
-        // Safely extract array regardless of wrapper structure or errors
         let rawArray = [];
         if (Array.isArray(res?.data)) {
           rawArray = res.data;
@@ -25,12 +25,11 @@ const StatsSection = () => {
           rawArray = res.data.stats;
         } else if (Array.isArray(res?.data?.data)) {
           rawArray = res.data.data;
-        } else {
-          console.warn('API returned non-array stats response:', res?.data);
         }
 
-        // Initialize value as 0 for smooth animation
-        const statsWithZero = rawArray.map((stat) => ({
+        const source = rawArray.length > 0 ? rawArray : defaultStats;
+
+        const statsWithZero = source.map((stat) => ({
           ...stat,
           target: Number(stat.target) || 0,
           value: 0,
@@ -38,8 +37,8 @@ const StatsSection = () => {
 
         setStats(statsWithZero);
       } catch (error) {
-        console.error('Error fetching stats:', error);
-        setStats([]);
+        console.error('Error fetching stats, using fallback:', error);
+        setStats(defaultStats.map(s => ({ ...s, target: Number(s.target) || 0, value: 0 })));
       } finally {
         setLoading(false);
       }
@@ -112,7 +111,7 @@ const StatsSection = () => {
     return (num || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   };
 
-  if (loading) {
+  if (loading && stats.length === 0) {
     return (
       <section className="stats-section section" ref={statsRef}>
         <div className="container text-center">
@@ -122,18 +121,7 @@ const StatsSection = () => {
     );
   }
 
-  if (stats.length === 0) {
-    return (
-      <section className="stats-section section" ref={statsRef}>
-        <div className="container">
-          <div className="stats-section__header text-center mb-5">
-            <h2 className="heading-2 heading-underline heading-center">Our Impact in Numbers</h2>
-          </div>
-          <p style={{ textAlign: 'center', color: 'var(--dark-gray)' }}>No statistics available.</p>
-        </div>
-      </section>
-    );
-  }
+  const displayedStats = stats.length > 0 ? stats : defaultStats;
 
   return (
     <section className="stats-section section" ref={statsRef}>
@@ -143,7 +131,7 @@ const StatsSection = () => {
           <p className="lead text-gray">The growth and achievements of our club over the years</p>
         </div>
         <div className="stats-section__grid grid grid-5">
-          {stats.map((stat, idx) => (
+          {displayedStats.map((stat, idx) => (
             <div key={stat.id || idx} className="stats-section__card card">
               <div className="stats-section__icon">
                 {stat.id === 1 && <i className="fas fa-users"></i>}

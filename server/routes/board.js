@@ -1,5 +1,5 @@
 const express = require('express');
-const { supabaseAdmin } = require('../utils/supabaseClient');
+const { supabaseAdmin, canQuerySupabase, markSupabaseDown } = require('../utils/supabaseClient');
 const authMiddleware = require('../middleware/auth');
 const adminMiddleware = require('../middleware/admin');
 const router = express.Router();
@@ -38,14 +38,26 @@ const safeUpdate = async (table, id, payload) => {
   }
 };
 
+const { getFallbackData, addItem, updateItem, deleteItem } = require('../utils/fallbackStore');
+
 // Public: get all board members
 router.get('/', async (req, res) => {
-  const { data, error } = await supabaseAdmin
-    .from('board_members')
-    .select('*')
-    .order('display_order', { ascending: true });
-  if (error) return res.status(500).json({ error: error.message });
-  res.json(data);
+  try {
+    if (canQuerySupabase()) {
+      const { data, error } = await supabaseAdmin
+        .from('board_members')
+        .select('*')
+        .order('display_order', { ascending: true });
+      if (error) {
+        markSupabaseDown(error);
+      } else if (Array.isArray(data) && data.length > 0) {
+        return res.json(data);
+      }
+    }
+  } catch (err) {
+    markSupabaseDown(err);
+  }
+  return res.json(getFallbackData('board_members'));
 });
 
 // Admin only: create
@@ -56,13 +68,24 @@ router.post('/', authMiddleware, adminMiddleware, async (req, res) => {
     Object.entries(payload).filter(([key]) => allowedFields.includes(key))
   );
 
-  const { data, error } = await safeInsert('board_members', {
+  const fullPayload = {
     ...safePayload,
     role: safePayload.role || 'member',
     year: safePayload.year || new Date().getFullYear(),
-  });
-  if (error) return res.status(500).json({ error: error.message });
-  res.status(201).json(data[0]);
+  };
+
+  if (canQuerySupabase()) {
+    try {
+      const { data, error } = await safeInsert('board_members', fullPayload);
+      if (!error && data?.length) return res.status(201).json(data[0]);
+      if (error) markSupabaseDown(error);
+    } catch (err) {
+      markSupabaseDown(err);
+    }
+  }
+
+  const created = addItem('board_members', fullPayload);
+  res.status(201).json(created);
 });
 
 // Admin only: update
@@ -74,20 +97,38 @@ router.put('/:id', authMiddleware, adminMiddleware, async (req, res) => {
     Object.entries(payload).filter(([key]) => allowedFields.includes(key))
   );
 
-  const { data, error } = await safeUpdate('board_members', id, updates);
-  if (error) return res.status(500).json({ error: error.message });
-  if (!data.length) return res.status(404).json({ error: 'Not found' });
-  res.json(data[0]);
+  if (canQuerySupabase()) {
+    try {
+      const { data, error } = await safeUpdate('board_members', id, updates);
+      if (!error && data?.length) return res.json(data[0]);
+      if (error) markSupabaseDown(error);
+    } catch (err) {
+      markSupabaseDown(err);
+    }
+  }
+
+  const updated = updateItem('board_members', id, updates);
+  if (!updated) return res.status(404).json({ error: 'Not found' });
+  res.json(updated);
 });
 
 // Admin only: delete
 router.delete('/:id', authMiddleware, adminMiddleware, async (req, res) => {
   const { id } = req.params;
-  const { error } = await supabaseAdmin
-    .from('board_members')
-    .delete()
-    .eq('id', id);
-  if (error) return res.status(500).json({ error: error.message });
+  if (canQuerySupabase()) {
+    try {
+      const { error } = await supabaseAdmin
+        .from('board_members')
+        .delete()
+        .eq('id', id);
+      if (!error) return res.json({ message: 'Deleted' });
+      markSupabaseDown(error);
+    } catch (err) {
+      markSupabaseDown(err);
+    }
+  }
+
+  deleteItem('board_members', id);
   res.json({ message: 'Deleted' });
 });
 
