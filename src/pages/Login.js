@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import './Auth.css';
 
 const Login = () => {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [loading, setLoading] = useState(false);
@@ -16,7 +16,7 @@ const Login = () => {
     setErrorMsg('');
     setLoading(true);
     try {
-      await login(email, password);
+      await login(username, password);
       navigate('/admin');
     } catch (err) {
       const message = err.response?.data?.error || err.response?.data?.message || err.message;
@@ -51,13 +51,14 @@ const Login = () => {
 
         <form className="auth-form" onSubmit={handleSubmit}>
           <div className="auth-form__group">
-            <label className="auth-form__label">Email</label>
+            <label className="auth-form__label">Username</label>
             <input
-              type="email"
+              type="text"
               className="auth-form__input"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              placeholder="your@email.com"
+              value={username}
+              onChange={e => setUsername(e.target.value)}
+              placeholder="Enter your username"
+              autoComplete="username"
               required
             />
           </div>

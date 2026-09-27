@@ -24,9 +24,13 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  const login = async (email, password) => {
+  const login = async (usernameOrEmail, password) => {
     try {
-      const res = await api.post('/auth/signin', { email, password });
+      const res = await api.post('/auth/signin', { 
+        username: usernameOrEmail, 
+        email: usernameOrEmail, 
+        password 
+      });
       const { session } = res.data;
       localStorage.setItem('token', session.access_token);
       // Fetch user profile with role

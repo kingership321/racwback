@@ -15,20 +15,30 @@ const isNetworkError = (err) => {
 
 // Sign in
 router.post('/signin', async (req, res) => {
-  const { email, password } = req.body;
-  const normalizedEmail = (email || '').toLowerCase().trim();
+  const { username, email, password } = req.body;
+  const inputIdentifier = (username || email || '').toLowerCase().trim();
+  const localAdminUsername = (process.env.ADMIN_USERNAME || 'admin').toLowerCase().trim();
   const localAdminEmail = (process.env.ADMIN_EMAIL || 'kingership321@gmail.com').toLowerCase().trim();
   const localAdminPassword = process.env.ADMIN_PASSWORD || 'admin123';
 
-  console.log('Login attempt:', normalizedEmail);
+  console.log('Login attempt with identifier:', inputIdentifier);
+
+  const isAdminIdentifier = 
+    inputIdentifier === localAdminUsername ||
+    inputIdentifier === 'admin' ||
+    inputIdentifier === 'kingership321' ||
+    inputIdentifier === localAdminEmail;
 
   // 1. Check admin credentials (supports BOTH online and offline seamlessly)
-  if (normalizedEmail === localAdminEmail && password === localAdminPassword) {
+  if (isAdminIdentifier && password === localAdminPassword) {
     if (canQuerySupabase() && supabase) {
       try {
-        const { data, error } = await supabase.auth.signInWithPassword({ email: normalizedEmail, password });
+        const { data, error } = await supabase.auth.signInWithPassword({ email: localAdminEmail, password });
         if (!error && data?.session) {
-          return res.json({ user: data.user, session: data.session });
+          return res.json({ 
+            user: { ...data.user, username: localAdminUsername }, 
+            session: data.session 
+          });
         }
       } catch (err) {
         console.warn('Supabase signin attempt failed, falling back to local admin session:', err.message);
@@ -37,16 +47,23 @@ router.post('/signin', async (req, res) => {
 
     // Offline / Fallback admin token
     const token = jwt.sign(
-      { id: 'local-admin-id', email: localAdminEmail, role: 'admin', full_name: 'Administrator' },
+      { 
+        id: 'local-admin-id', 
+        username: localAdminUsername, 
+        email: localAdminEmail, 
+        role: 'admin', 
+        full_name: 'Administrator' 
+      },
       process.env.JWT_SECRET || 'rctu-jwt-secret-key',
       { expiresIn: '7d' }
     );
     return res.json({
       user: {
         id: 'local-admin-id',
+        username: localAdminUsername,
         email: localAdminEmail,
         role: 'admin',
-        user_metadata: { full_name: 'Administrator' }
+        user_metadata: { full_name: 'Administrator', username: localAdminUsername }
       },
       session: {
         access_token: token,
@@ -56,35 +73,39 @@ router.post('/signin', async (req, res) => {
     });
   }
 
-  // 2. Try Supabase for other users if available
-  if (canQuerySupabase() && supabase) {
+  // If identifier matched admin but password was incorrect
+  if (isAdminIdentifier && password !== localAdminPassword) {
+    return res.status(401).json({ error: 'Invalid username or password' });
+  }
+
+  // 2. Try Supabase for other email credentials if available
+  if (canQuerySupabase() && supabase && inputIdentifier.includes('@')) {
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({ email: normalizedEmail, password });
+      const { data, error } = await supabase.auth.signInWithPassword({ email: inputIdentifier, password });
       if (error) {
         if (isNetworkError(error)) {
           markSupabaseDown(error);
           return res.status(503).json({
-            error: `Database connection failed: Unable to connect to Supabase at ${process.env.SUPABASE_URL || 'configured URL'} (the project may be paused in your Supabase dashboard). For admin login, use ${localAdminEmail} / ${localAdminPassword}`
+            error: 'Database connection failed: Unable to connect to Supabase.'
           });
         }
-        return res.status(401).json({ error: error.message });
+        return res.status(401).json({ error: error.message || 'Invalid username or password' });
       }
       return res.json({ user: data.user, session: data.session });
     } catch (err) {
       if (isNetworkError(err)) {
         markSupabaseDown(err);
         return res.status(503).json({
-          error: `Database connection failed: Unable to connect to Supabase at ${process.env.SUPABASE_URL || 'configured URL'} (the project may be paused in your Supabase dashboard). For admin login, use ${localAdminEmail} / ${localAdminPassword}`
+          error: 'Database connection failed: Unable to connect to Supabase.'
         });
       }
-      console.error('Signin catch error:', err);
       return res.status(401).json({ error: err.message || 'Authentication failed' });
     }
   }
 
-  // 3. Supabase offline and non-matching credentials
-  return res.status(503).json({
-    error: `Database connection failed: Unable to reach Supabase. For admin login, use ${localAdminEmail} / ${localAdminPassword}`
+  // 3. Invalid credentials
+  return res.status(401).json({
+    error: 'Invalid username or password'
   });
 });
 
@@ -103,13 +124,17 @@ router.post('/signup', (req, res) => {
 
 // Get current user (with role)
 router.get('/me', authMiddleware, async (req, res) => {
+  const localAdminUsername = process.env.ADMIN_USERNAME || 'admin';
+  const localAdminEmail = (process.env.ADMIN_EMAIL || 'kingership321@gmail.com').toLowerCase().trim();
+
   // If local admin or role already defined on req.user
-  if (req.user?.role === 'admin' || req.user?.id === 'local-admin-id' || req.user?.email === 'kingership321@gmail.com') {
+  if (req.user?.role === 'admin' || req.user?.id === 'local-admin-id' || req.user?.email?.toLowerCase().trim() === localAdminEmail) {
     return res.json({
       id: req.user.id,
-      email: req.user.email,
+      username: localAdminUsername,
+      email: req.user.email || localAdminEmail,
       role: 'admin',
-      user_metadata: req.user.user_metadata || { full_name: 'Administrator' }
+      user_metadata: req.user.user_metadata || { full_name: 'Administrator', username: localAdminUsername }
     });
   }
 
@@ -143,7 +168,15 @@ router.post('/change-password', authMiddleware, async (req, res) => {
     return res.status(403).json({ error: 'Admin access required to change password' });
   }
 
-  const { newPassword } = req.body;
+  const { newPassword, verificationEmail } = req.body;
+
+  // Security verification: require matching security verification email
+  if (!verificationEmail || verificationEmail.toLowerCase().trim() !== localAdminEmail) {
+    return res.status(403).json({ 
+      error: 'Security verification failed: Please enter the correct administrator verification email to authorize this change.' 
+    });
+  }
+
   if (!newPassword || newPassword.length < 6) {
     return res.status(400).json({ error: 'New password must be at least 6 characters long' });
   }
@@ -171,7 +204,7 @@ router.post('/change-password', authMiddleware, async (req, res) => {
   let supabaseUpdated = false;
   if (canQuerySupabase() && supabaseAdmin) {
     try {
-      const targetEmail = req.user?.email || localAdminEmail;
+      const targetEmail = localAdminEmail;
       const { data: userList } = await supabaseAdmin.auth.admin.listUsers();
       const targetUser = userList?.users?.find(u => u.email?.toLowerCase() === targetEmail.toLowerCase());
       

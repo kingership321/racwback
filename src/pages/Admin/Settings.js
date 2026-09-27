@@ -7,7 +7,7 @@ const Settings = () => {
   const [editing, setEditing] = useState(null);
   const [formData, setFormData] = useState({ key: '', value: '' });
   const [loading, setLoading] = useState(false);
-  const [pwData, setPwData] = useState({ newPassword: '', confirmPassword: '' });
+  const [pwData, setPwData] = useState({ verificationEmail: '', newPassword: '', confirmPassword: '' });
   const [pwLoading, setPwLoading] = useState(false);
   const [pwMsg, setPwMsg] = useState(null);
 
@@ -80,6 +80,10 @@ const Settings = () => {
   const handlePasswordChange = async (e) => {
     e.preventDefault();
     setPwMsg(null);
+    if (!pwData.verificationEmail.trim()) {
+      setPwMsg({ type: 'error', text: 'Please enter your administrator security verification email.' });
+      return;
+    }
     if (!pwData.newPassword || pwData.newPassword.length < 6) {
       setPwMsg({ type: 'error', text: 'New password must be at least 6 characters long.' });
       return;
@@ -90,9 +94,12 @@ const Settings = () => {
     }
     setPwLoading(true);
     try {
-      const res = await api.post('/auth/change-password', { newPassword: pwData.newPassword });
+      const res = await api.post('/auth/change-password', { 
+        verificationEmail: pwData.verificationEmail.trim(),
+        newPassword: pwData.newPassword 
+      });
       setPwMsg({ type: 'success', text: res.data?.message || 'Password successfully updated!' });
-      setPwData({ newPassword: '', confirmPassword: '' });
+      setPwData({ verificationEmail: '', newPassword: '', confirmPassword: '' });
     } catch (err) {
       setPwMsg({ type: 'error', text: err.response?.data?.error || 'Failed to update password.' });
     } finally {
@@ -210,7 +217,7 @@ const Settings = () => {
           <FaKey style={{ color: 'var(--rotaract-blue, #004080)' }} /> Change Admin Password
         </h3>
         <p style={{ color: 'var(--dark-gray)', fontSize: '0.9rem', marginBottom: '1.2rem' }}>
-          Update the password for administrator <strong>kingership321@gmail.com</strong>. This updates your password across both the local server and Supabase database.
+          For security, confirm your registered administrator verification email to update your password across both the local server and Supabase database.
         </p>
 
         {pwMsg && (
@@ -232,6 +239,20 @@ const Settings = () => {
         )}
 
         <form className="admin-form" onSubmit={handlePasswordChange} style={{ maxWidth: '600px' }}>
+          <div className="admin-form__group" style={{ marginBottom: '1.2rem' }}>
+            <label>Administrator Verification Email <span className="required">*</span></label>
+            <input
+              type="email"
+              placeholder="e.g. your-admin-email@gmail.com"
+              value={pwData.verificationEmail}
+              onChange={e => setPwData(prev => ({ ...prev, verificationEmail: e.target.value }))}
+              required
+            />
+            <small style={{ color: 'var(--dark-gray)', fontSize: '0.8rem', marginTop: '0.35rem', display: 'block' }}>
+              Enter the registered security email (<code>kingership321@gmail.com</code>) to verify authorization.
+            </small>
+          </div>
+
           <div className="admin-form__grid" style={{ gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
             <div className="admin-form__group">
               <label>New Password <span className="required">*</span></label>
@@ -256,7 +277,7 @@ const Settings = () => {
               />
             </div>
           </div>
-          <div className="admin-form__actions" style={{ marginTop: '1rem' }}>
+          <div className="admin-form__actions" style={{ marginTop: '1.2rem' }}>
             <button type="submit" className="btn-admin btn-admin--primary" disabled={pwLoading}>
               <FaSave /> {pwLoading ? 'Updating Password...' : 'Save New Password'}
             </button>
