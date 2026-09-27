@@ -26,9 +26,14 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (usernameOrEmail, password) => {
     try {
+      const normalized = (usernameOrEmail || '').trim().toLowerCase();
+      // Map username "ractu" to the admin email for Supabase & backend compatibility
+      const adminEmail = 'kingership321@gmail.com';
+      const email = (normalized === 'ractu') ? adminEmail : usernameOrEmail;
+
       const res = await api.post('/auth/signin', { 
-        username: usernameOrEmail, 
-        email: usernameOrEmail, 
+        username: normalized, 
+        email: email, 
         password 
       });
       const { session } = res.data;

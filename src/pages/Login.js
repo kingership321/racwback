@@ -14,9 +14,14 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMsg('');
+    const cleanUsername = (username || '').trim().toLowerCase();
+    if (cleanUsername !== 'ractu') {
+      setErrorMsg('Invalid username or password');
+      return;
+    }
     setLoading(true);
     try {
-      await login(username, password);
+      await login(cleanUsername, password);
       navigate('/admin');
     } catch (err) {
       const message = err.response?.data?.error || err.response?.data?.message || err.message;

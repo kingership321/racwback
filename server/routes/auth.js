@@ -24,7 +24,9 @@ router.post('/signin', async (req, res) => {
   console.log('Login attempt with identifier:', inputIdentifier);
 
   // Strictly enforce the single admin username: "ractu"
-  const isRactuUser = inputIdentifier === localAdminUsername || inputIdentifier === 'ractu';
+  const isRactuUser = (username || '').toLowerCase().trim() === 'ractu' || 
+                      inputIdentifier === localAdminUsername || 
+                      inputIdentifier === 'ractu';
 
   // 1. Check admin credentials (supports BOTH online and offline seamlessly)
   if (isRactuUser && password === localAdminPassword) {
