@@ -17,26 +17,23 @@ const isNetworkError = (err) => {
 router.post('/signin', async (req, res) => {
   const { username, email, password } = req.body;
   const inputIdentifier = (username || email || '').toLowerCase().trim();
-  const localAdminUsername = (process.env.ADMIN_USERNAME || 'admin').toLowerCase().trim();
+  const localAdminUsername = (process.env.ADMIN_USERNAME || 'ractu').toLowerCase().trim();
   const localAdminEmail = (process.env.ADMIN_EMAIL || 'kingership321@gmail.com').toLowerCase().trim();
   const localAdminPassword = process.env.ADMIN_PASSWORD || 'admin123';
 
   console.log('Login attempt with identifier:', inputIdentifier);
 
-  const isAdminIdentifier = 
-    inputIdentifier === localAdminUsername ||
-    inputIdentifier === 'admin' ||
-    inputIdentifier === 'kingership321' ||
-    inputIdentifier === localAdminEmail;
+  // Strictly enforce the single admin username: "ractu"
+  const isRactuUser = inputIdentifier === localAdminUsername || inputIdentifier === 'ractu';
 
   // 1. Check admin credentials (supports BOTH online and offline seamlessly)
-  if (isAdminIdentifier && password === localAdminPassword) {
+  if (isRactuUser && password === localAdminPassword) {
     if (canQuerySupabase() && supabase) {
       try {
         const { data, error } = await supabase.auth.signInWithPassword({ email: localAdminEmail, password });
         if (!error && data?.session) {
           return res.json({ 
-            user: { ...data.user, username: localAdminUsername }, 
+            user: { ...data.user, username: 'ractu' }, 
             session: data.session 
           });
         }
@@ -49,7 +46,7 @@ router.post('/signin', async (req, res) => {
     const token = jwt.sign(
       { 
         id: 'local-admin-id', 
-        username: localAdminUsername, 
+        username: 'ractu', 
         email: localAdminEmail, 
         role: 'admin', 
         full_name: 'Administrator' 
@@ -60,10 +57,10 @@ router.post('/signin', async (req, res) => {
     return res.json({
       user: {
         id: 'local-admin-id',
-        username: localAdminUsername,
+        username: 'ractu',
         email: localAdminEmail,
         role: 'admin',
-        user_metadata: { full_name: 'Administrator', username: localAdminUsername }
+        user_metadata: { full_name: 'Administrator', username: 'ractu' }
       },
       session: {
         access_token: token,
@@ -73,40 +70,8 @@ router.post('/signin', async (req, res) => {
     });
   }
 
-  // If identifier matched admin but password was incorrect
-  if (isAdminIdentifier && password !== localAdminPassword) {
-    return res.status(401).json({ error: 'Invalid username or password' });
-  }
-
-  // 2. Try Supabase for other email credentials if available
-  if (canQuerySupabase() && supabase && inputIdentifier.includes('@')) {
-    try {
-      const { data, error } = await supabase.auth.signInWithPassword({ email: inputIdentifier, password });
-      if (error) {
-        if (isNetworkError(error)) {
-          markSupabaseDown(error);
-          return res.status(503).json({
-            error: 'Database connection failed: Unable to connect to Supabase.'
-          });
-        }
-        return res.status(401).json({ error: error.message || 'Invalid username or password' });
-      }
-      return res.json({ user: data.user, session: data.session });
-    } catch (err) {
-      if (isNetworkError(err)) {
-        markSupabaseDown(err);
-        return res.status(503).json({
-          error: 'Database connection failed: Unable to connect to Supabase.'
-        });
-      }
-      return res.status(401).json({ error: err.message || 'Authentication failed' });
-    }
-  }
-
-  // 3. Invalid credentials
-  return res.status(401).json({
-    error: 'Invalid username or password'
-  });
+  // Any non-matching username or wrong password
+  return res.status(401).json({ error: 'Invalid username or password' });
 });
 
 // Alias /login -> /signin
@@ -124,17 +89,17 @@ router.post('/signup', (req, res) => {
 
 // Get current user (with role)
 router.get('/me', authMiddleware, async (req, res) => {
-  const localAdminUsername = process.env.ADMIN_USERNAME || 'admin';
+  const localAdminUsername = process.env.ADMIN_USERNAME || 'ractu';
   const localAdminEmail = (process.env.ADMIN_EMAIL || 'kingership321@gmail.com').toLowerCase().trim();
 
   // If local admin or role already defined on req.user
   if (req.user?.role === 'admin' || req.user?.id === 'local-admin-id' || req.user?.email?.toLowerCase().trim() === localAdminEmail) {
     return res.json({
       id: req.user.id,
-      username: localAdminUsername,
+      username: 'ractu',
       email: req.user.email || localAdminEmail,
       role: 'admin',
-      user_metadata: req.user.user_metadata || { full_name: 'Administrator', username: localAdminUsername }
+      user_metadata: req.user.user_metadata || { full_name: 'Administrator', username: 'ractu' }
     });
   }
 
