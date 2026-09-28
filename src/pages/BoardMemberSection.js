@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { FaFacebook, FaLinkedin, FaEnvelope } from 'react-icons/fa';
 import api from '../services/api';
 import { defaultBoardMembers } from '../data/defaultData';
 import './BoardMemberSection.css';
@@ -45,7 +43,6 @@ const BoardMemberSection = () => {
     return isBoard && (year === currentRotaYear || !member.year);
   });
 
-  // If year filter matches none, fallback to all board members
   const boardMembersToDisplay = yearFiltered.length > 0
     ? yearFiltered
     : allMembers.filter(m => m.role !== 'general');
@@ -58,9 +55,9 @@ const BoardMemberSection = () => {
     <section className="board-members">
       <div className="container">
         <div className="board-members__header text-center mb-5">
-          <h2 className="heading-2 heading-underline heading-center">Our Board Members</h2>
+          <h2 className="heading-2 heading-underline heading-center">Board of Directors</h2>
           <p className="lead text-gray">
-            Meet the dedicated team leading our club towards positive change.
+            Meet our passionate leaders driving innovation, community service, and fellowship for the 2026–2027 term.
           </p>
         </div>
 
@@ -71,6 +68,7 @@ const BoardMemberSection = () => {
             const fb = member.facebook_url || member.facebook || fallbackMember?.facebook_url;
             const li = member.linkedin_url || member.linkedin || fallbackMember?.linkedin_url;
             const em = member.email || fallbackMember?.email;
+            const ph = member.phone || fallbackMember?.phone;
 
             return (
               <div key={member.id} className="board-member-card card">
@@ -85,23 +83,6 @@ const BoardMemberSection = () => {
                       }
                     }}
                   />
-                  <div className="board-member-card__socials">
-                    {fb && (
-                      <a href={fb} target="_blank" rel="noopener noreferrer" className="board-member-card__social-link" aria-label="Facebook">
-                        <FaFacebook />
-                      </a>
-                    )}
-                    {li && (
-                      <a href={li} target="_blank" rel="noopener noreferrer" className="board-member-card__social-link" aria-label="LinkedIn">
-                        <FaLinkedin />
-                      </a>
-                    )}
-                    {em && (
-                      <a href={`mailto:${em}`} className="board-member-card__social-link" aria-label="Email">
-                        <FaEnvelope />
-                      </a>
-                    )}
-                  </div>
                 </div>
                 <div className="board-member-card__info text-center">
                   <h3 className="board-member-card__name heading-5">{member.name}</h3>
@@ -110,12 +91,6 @@ const BoardMemberSection = () => {
               </div>
             );
           })}
-        </div>
-
-        <div className="board-members__cta">
-          <Link to="/teams" className="btn btn-primary">
-            Know more about our Teams
-          </Link>
         </div>
       </div>
     </section>

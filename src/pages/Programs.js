@@ -211,12 +211,7 @@ const Programs = () => {
           </div>
         </div>
 
-        {/* Link to complete gallery */}
-        <div style={{ textAlign: 'center', marginTop: '2.5rem', marginBottom: '3rem' }}>
-          <Link to="/imagegallery" className="btn btn-primary">
-            View Complete Gallery
-          </Link>
-        </div>
+
 
         {/* Upcoming Programs section */}
         <section className="upcoming-programs mt-5">

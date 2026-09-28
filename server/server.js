@@ -28,10 +28,12 @@ const envOrigins = (process.env.FRONTEND_URLS || process.env.FRONTEND_URL || '')
   .map(s => s.trim())
   .filter(Boolean);
 
-// Always include localhost for development
 const defaultOrigins = [
   'http://localhost:3000',
   'http://localhost:3001',
+  'http://localhost:5000',
+  'http://localhost:5050',
+  'http://localhost:8080',
 ];
 
 // Include your known production URL explicitly (change if different)
@@ -51,11 +53,12 @@ app.use(cors({
   origin: (origin, callback) => {
     // Allow requests with no origin (e.g., mobile apps, curl)
     if (!origin) return callback(null, true);
-    
-    if (allowedOrigins.includes(origin)) {
+
+    const isLocalhost = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
+    if (isLocalhost || allowedOrigins.includes(origin)) {
       return callback(null, true);
     }
-    
+
     console.warn(`❌ CORS blocked origin: ${origin}`);
     return callback(new Error(`CORS policy: Origin "${origin}" not allowed`), false);
   },
